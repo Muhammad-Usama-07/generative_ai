@@ -13,7 +13,7 @@ import os
 os.environ["GROQ_API_KEY"] = ""
 client = Groq()
 
-MODEL = "llama-3.1-70b-versatilwee"
+MODEL = "llama-3.1-70b-versatile"
 TEMPERATURE = 0
 MAX_TOKENS = 4096
 
@@ -63,8 +63,8 @@ def retrieve_context(query: str, k: int = 3) -> str:
     result = "\n---\n".join([f"{row['question']}\n{row['answer']}" for _, row in top_k_df.iterrows()])
     return result
 
-SYSTEM_PROMPT = """
-You're a senior customer support agent for an online e commerce website name clawset.
+SYSTEM_PROMPT = f"""
+You're a senior customer support agent for an online e commerce website name {website_name}.
 You're always helpful and answer customer questions only based on the provided
 information. If you don't know the answer - just reply with an excuse that you
 don't know. Keep your answers brief and to the point. Be kind and respectful.
