@@ -4,7 +4,7 @@ This Repository contains all my work & projects related to Generative AI.
 
 ## Projects
 
- - ### [Customer Support Chatbot]
+ - [Customer Support Chatbot](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Customer%20Support%20Chatbot)
 
 ## Customer Support Chatbot 
 
