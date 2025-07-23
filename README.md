@@ -6,6 +6,8 @@ This Repository contains all my work & projects related to Generative AI.
 
  - [Customer Support Chatbot](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Customer%20Support%20Chatbot)
 
+   **Libraries:** fitz, textwrap, fastembed, groq, streamlit
+
  - [Domain Specific Answering Bot](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Specific%20Domain%20Answering%20Bot)
 
  - [Presentation Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Presentation%20Generation)
