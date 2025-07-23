@@ -10,8 +10,12 @@ This Repository contains all my work & projects related to Generative AI.
 
  - [Domain Specific Answering Bot](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Specific%20Domain%20Answering%20Bot)
 
-   **Libraries:** fastapi, pydantic, uvicorn, groq
+   **Libraries:** fitz, textwrap, fastembed, groq, streamlit
 
  - [Presentation Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Presentation%20Generation)
 
+   **Libraries:** streamlit, base64, pptx, ctransformers, textwrap, fastembed, groq
+
  - [Email & Text Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Email%20%26%20Text%20Generation)
+
+   **Libraries:** fastapi, pydantic, uvicorn, groq
