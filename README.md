@@ -14,6 +14,8 @@ This Repository contains all my work & projects related to Generative AI.
 
    **Libraries:** fitz, textwrap, fastembed, groq, streamlit
 
+   **Models:** "llama-3.1-70b-versatile"
+
  - [Presentation Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Presentation%20Generation)
 
    **Libraries:** streamlit, base64, pptx, ctransformers, textwrap, fastembed, groq
