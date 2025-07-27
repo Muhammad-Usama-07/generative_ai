@@ -26,7 +26,7 @@ def read_pdf(file_path: str) -> str:
     return text
 
 # Load the PDF
-pdf_text = read_pdf("clawset_doc.pdf")
+pdf_text = read_pdf("")
 
 # Prepare the knowledge base from PDF text
 KNOWLEDGE_BASE = [
