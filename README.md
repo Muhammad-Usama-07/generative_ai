@@ -8,6 +8,8 @@ This Repository contains all my work & projects related to Generative AI.
 
    **Libraries:** fitz, textwrap, fastembed, groq, streamlit
 
+   **Models:** "llama-3.1-70b-versatile"
+
  - [Domain Specific Answering Bot](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Specific%20Domain%20Answering%20Bot)
 
    **Libraries:** fitz, textwrap, fastembed, groq, streamlit
