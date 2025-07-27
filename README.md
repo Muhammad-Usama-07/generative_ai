@@ -18,6 +18,8 @@ This Repository contains all my work & projects related to Generative AI.
 
    **Libraries:** streamlit, base64, pptx, ctransformers, textwrap, fastembed, groq
 
+   **Models:** "llama-3.1-70b-versatile"
+
  - [Email & Text Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Email%20%26%20Text%20Generation)
 
    **Libraries:** fastapi, pydantic, uvicorn, groq
