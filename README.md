@@ -21,3 +21,5 @@ This Repository contains all my work & projects related to Generative AI.
  - [Email & Text Generation](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Email%20%26%20Text%20Generation)
 
    **Libraries:** fastapi, pydantic, uvicorn, groq
+
+   **Models:** llama3-8b-8192
