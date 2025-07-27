@@ -29,7 +29,7 @@ SLIDE_FONT_SIZE = Pt(16)
 
 
 # Set up the Groq API key and client
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = ""
 client = Groq()
 
 MODEL = "llama-3.1-70b-versatile"
