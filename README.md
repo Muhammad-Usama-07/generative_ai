@@ -30,3 +30,5 @@ This Repository contains all my work & projects related to Generative AI.
 
 
 ### Todo
+
+- use LLM for database
