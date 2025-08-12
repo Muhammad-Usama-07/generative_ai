@@ -27,3 +27,6 @@ This Repository contains all my work & projects related to Generative AI.
    **Libraries:** fastapi, pydantic, uvicorn, groq
 
    **Models:** llama3-8b-8192
+
+
+### Todo
