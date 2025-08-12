@@ -33,3 +33,4 @@ This Repository contains all my work & projects related to Generative AI.
 
 - use LLM for database
 - perform system's actions
+- urdu speech
