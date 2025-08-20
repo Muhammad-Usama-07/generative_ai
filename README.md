@@ -36,3 +36,4 @@ This Repository contains all my work & projects related to Generative AI.
 - urdu speech
 - use Gemini
 - claude
+- Openai
