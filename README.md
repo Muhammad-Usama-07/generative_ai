@@ -31,6 +31,7 @@ This Repository contains all my work & projects related to Generative AI.
 
 ### Todo
 
+#### projects
 - use LLM for database
 - perform system's actions
 - urdu speech
