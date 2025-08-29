@@ -36,6 +36,7 @@ This Repository contains all my work & projects related to Generative AI.
 - perform system's actions
 - urdu speech
 - tryon
+- image/video generation
 
 ####
 - use Gemini
