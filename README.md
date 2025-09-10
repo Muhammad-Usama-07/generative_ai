@@ -37,7 +37,8 @@ This Repository contains all my work & projects related to Generative AI.
 - urdu speech
 - tryon
 - image/video generation
-- resume analysis 
+- resume analysis
+- post content generator 
 
 ####
 - use Gemini
