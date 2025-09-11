@@ -42,6 +42,7 @@ This Repository contains all my work & projects related to Generative AI.
 
 ####
 - use Gemini
+- Gemini flash
 - claude
 - Openai
 - hugging face 
