@@ -40,7 +40,10 @@ This Repository contains all my work & projects related to Generative AI.
 - resume analysis
 - post content generator 
 
-####
+#### Course 
+- Prompt Engineering
+
+#### Tool
 - use Gemini
 - Gemini flash
 - claude
