@@ -42,6 +42,7 @@ This Repository contains all my work & projects related to Generative AI.
 
 #### Course 
 - Prompt Engineering
+- LLM concept
 
 #### Tool
 - use Gemini
