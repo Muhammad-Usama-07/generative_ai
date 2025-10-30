@@ -28,6 +28,9 @@ This Repository contains all my work & projects related to Generative AI.
 
    **Models:** llama3-8b-8192
 
+### Technologies 
+- chatbots
+
 
 ### Todo
 
