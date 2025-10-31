@@ -41,7 +41,8 @@ This Repository contains all my work & projects related to Generative AI.
 - tryon
 - image/video generation
 - resume analysis
-- post content generator 
+- post content generator
+- order booking chatbot
 
 #### Course 
 - Prompt Engineering
