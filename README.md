@@ -43,6 +43,7 @@ This Repository contains all my work & projects related to Generative AI.
 - resume analysis
 - post content generator
 - order booking chatbot
+- speech to speech bot
 
 #### Course 
 - Prompt Engineering
