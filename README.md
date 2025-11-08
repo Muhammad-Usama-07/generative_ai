@@ -46,6 +46,7 @@ This Repository contains all my work & projects related to Generative AI.
 - speech to speech bot
 - mailbox automation
 - voice bot
+- social media post maker
 
 #### Course 
 - Prompt Engineering
