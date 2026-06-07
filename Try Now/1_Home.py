@@ -1,10 +1,11 @@
 """
-1_Home.py  (or app.py)
-Entry point — redirects to the landing page or renders it inline.
-Place this in the root as: fitai/1_Home.py
+1_Home.py
+Main entry point for FitAI multi-page app.
+set_page_config() lives HERE ONLY — never in child pages.
 """
 import streamlit as st
 
+# ── Must be FIRST Streamlit call, in the main file only ───────────────────────
 st.set_page_config(
     page_title="FitAI · Virtual Try-On",
     page_icon="👗",
@@ -22,12 +23,7 @@ st.markdown("""
 st.markdown("# 👗 FitAI")
 st.markdown("### AI-Powered Virtual Try-On")
 st.markdown("---")
+st.markdown("Welcome to **FitAI** — virtually try on tops, bottoms, shoes, dresses and accessories.")
 
-st.markdown("""
-Welcome to **FitAI** — browse our collection and virtually try on any item.
-
-Use the sidebar or click below to get started.
-""")
-
-if st.button("✨ Go to Virtual Try-On", use_container_width=False):
+if st.button("✨ Go to Virtual Try-On"):
     st.switch_page("pages/2_Try_On.py")
