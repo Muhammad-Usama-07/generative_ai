@@ -29,6 +29,7 @@ This Repository contains all my work & projects related to Generative AI.
    **Models:** llama3-8b-8192
 
 - [Virtaul TryOn](https://github.com/Muhammad-Usama-07/generative_ai/tree/main/Try%20Now)
+- **Libraries:** HTML, CSS, JS
 
 ### Technologies 
 - chatbots
