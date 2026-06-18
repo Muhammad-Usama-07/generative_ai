@@ -55,6 +55,11 @@ This Repository contains all my work & projects related to Generative AI.
 - Prompt Engineering
 - LLM concept
 
+### LLM Providers & Models
+
+- Groq (LLaMA 3.1 70B, LLaMA 3.2 Vision, LLaMA 3.3 70B versatile)
+- OpenAI (GPT-4o)
+
 #### Tool
 - use Gemini
 - Gemini flash
