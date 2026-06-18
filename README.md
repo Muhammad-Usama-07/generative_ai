@@ -60,6 +60,11 @@ This Repository contains all my work & projects related to Generative AI.
 - Groq (LLaMA 3.1 70B, LLaMA 3.2 Vision, LLaMA 3.3 70B versatile)
 - OpenAI (GPT-4o)
 
+### Frameworks & Libraries
+
+- LangChain (tool-calling, agents, OpenAI functions agent, manual tool-calling loops)
+- FastEmbed (for RAG/embeddings)
+
 #### Tool
 - use Gemini
 - Gemini flash
