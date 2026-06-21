@@ -59,7 +59,29 @@
   .section-title em{font-style:italic;color:var(--warm)}
   .section-sub{color:var(--muted);font-size:1rem;line-height:1.7;max-width:540px;font-weight:300}
 
-  /* PRODUCTS */
+  /* BEFORE / AFTER SHOWCASE */
+  .showcase-section{background:#fff;text-align:center}
+  .showcase-section .section-title,.showcase-section .section-sub{text-align:center;margin-left:auto;margin-right:auto}
+  .showcase-section .section-sub{margin-bottom:3.5rem}
+  .ba-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:1100px;margin:0 auto}
+  .ba-card{border-radius:22px;overflow:hidden;border:1px solid rgba(200,169,110,.18);background:var(--cream);box-shadow:0 10px 40px rgba(26,23,20,.06);transition:transform .3s,box-shadow .3s}
+  .ba-card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(26,23,20,.12)}
+  .ba-slider{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;cursor:ew-resize;user-select:none}
+  .ba-slider img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  .ba-after{clip-path:inset(0 0 0 50%)}
+  .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.1);transform:translateX(-50%);pointer-events:none}
+  .ba-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231a1714' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5'/%3E%3Cpath d='M16 7l5 5-5 5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
+  .ba-tag{position:absolute;top:14px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:20px;z-index:3;pointer-events:none}
+  .ba-tag.before{left:14px;background:rgba(26,23,20,.7);color:#fff}
+  .ba-tag.after{right:14px;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink)}
+  .ba-info{padding:1.3rem 1.4rem 1.5rem;text-align:left}
+  .ba-item-name{font-weight:500;font-size:1rem;color:var(--ink);margin-bottom:.2rem}
+  .ba-item-meta{font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
+  .ba-hint{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--warm);letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+  .ba-hint svg{width:14px;height:14px}
+  .showcase-cta{margin-top:3rem}
+
+
   .products-header{text-align:center;margin-bottom:3rem}
   .products-header .section-sub{margin:0 auto}
   .cat-tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:3rem;flex-wrap:wrap}
@@ -359,6 +381,75 @@
   </div>
 </section>
 
+<!-- BEFORE / AFTER SHOWCASE -->
+<section class="showcase-section">
+  <div class="section-tag" style="display:block">✦ Real Results</div>
+  <h2 class="section-title">Don't just imagine it.<br><em>See it.</em></h2>
+  <p class="section-sub">Drag the slider to reveal the AI transformation — same photo, real outfit, instantly applied.</p>
+
+  <div class="ba-grid">
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=500&q=80" alt="Before">
+        <img class="ba-after" src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&q=80" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Classic White Tee</div>
+        <div class="ba-item-meta">Applied in 9 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="https://images.unsplash.com/photo-1542178243-bc20204b769f?w=500&q=80" alt="Before">
+        <img class="ba-after" src="https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=500&q=80" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Slim Fit Jeans</div>
+        <div class="ba-item-meta">Applied in 11 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80" alt="Before">
+        <img class="ba-after" src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=500&q=80" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Baseball Cap</div>
+        <div class="ba-item-meta">Applied in 7 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase-cta">
+    <button class="btn-primary" onclick="sendPrompt('Open the virtual try-on page')" style="padding:1rem 2.6rem;font-size:.95rem">
+      Try it with your own photo
+    </button>
+  </div>
+</section>
+
 <!-- TRY-ON CTA -->
 <section id="tryon" class="tryon-section" style="padding:7rem 3rem">
   <div class="section-tag">✦ AI Virtual Try-On</div>
@@ -449,6 +540,40 @@ function sendPrompt(text) {
     window.parent.postMessage({type: 'streamlit:setComponentValue', value: text}, '*');
   }
 }
+
+document.querySelectorAll('[data-ba]').forEach(function(slider) {
+  const after = slider.querySelector('.ba-after');
+  const handle = slider.querySelector('.ba-handle');
+  let dragging = false;
+
+  function setPosition(clientX) {
+    const rect = slider.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    handle.style.left = pct + '%';
+  }
+
+  slider.addEventListener('mousedown', function(e) { dragging = true; setPosition(e.clientX); });
+  window.addEventListener('mousemove', function(e) { if (dragging) setPosition(e.clientX); });
+  window.addEventListener('mouseup', function() { dragging = false; });
+
+  slider.addEventListener('touchstart', function(e) { dragging = true; setPosition(e.touches[0].clientX); });
+  slider.addEventListener('touchmove', function(e) { if (dragging) setPosition(e.touches[0].clientX); });
+  slider.addEventListener('touchend', function() { dragging = false; });
+
+  // Subtle auto-demo sweep on load to hint interactivity
+  let demoPos = 50, demoDir = 1, demoTicks = 0;
+  const demo = setInterval(function() {
+    if (dragging) return;
+    demoPos += demoDir * 0.6;
+    if (demoPos >= 68 || demoPos <= 32) demoDir *= -1;
+    after.style.clipPath = `inset(0 0 0 ${demoPos}%)`;
+    handle.style.left = demoPos + '%';
+    demoTicks++;
+    if (demoTicks > 90) { clearInterval(demo); after.style.clipPath = 'inset(0 0 0 50%)'; handle.style.left = '50%'; }
+  }, 30);
+});
 </script>
 </body>
 </html>
