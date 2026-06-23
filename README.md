@@ -64,11 +64,12 @@ This Repository contains all my work & projects related to Generative AI.
 
 - LangChain (tool-calling, agents, OpenAI functions agent, manual tool-calling loops)
 - FastEmbed (for RAG/embeddings)
-- FASHNAI
+
 
 #### Tool
 - use Gemini
 - Gemini flash
 - claude
 - Openai
-- hugging face 
+- hugging face
+- - FASHNAI API
