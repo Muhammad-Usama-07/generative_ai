@@ -72,4 +72,4 @@ This Repository contains all my work & projects related to Generative AI.
 - claude
 - Openai
 - hugging face
-- - FASHNAI API
+- FASHNAI API
