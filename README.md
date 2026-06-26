@@ -73,3 +73,4 @@ This Repository contains all my work & projects related to Generative AI.
 - Openai
 - hugging face
 - FASHNAI API
+- Groq API
