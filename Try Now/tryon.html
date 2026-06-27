@@ -6,7 +6,6 @@
 <title>FitAI · Virtual Try-On</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── Design tokens — exact match to index.html ─────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --cream:#faf7f2;--ink:#1a1714;--warm:#c8a96e;--warm-light:#e8d9bb;
@@ -15,174 +14,177 @@
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
 
-/* ── NAV — exact copy from index.html ─────────────────────────────────────── */
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(250,247,242,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,.2)}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);letter-spacing:.04em;text-decoration:none}
 .nav-logo span{color:var(--warm)}
 .nav-links{display:flex;gap:2rem;list-style:none}
 .nav-links a{text-decoration:none;color:var(--muted);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--warm)}
-.nav-links a.active{color:var(--warm)}
+.nav-links a:hover,.nav-links a.active{color:var(--warm)}
 .nav-cta{background:var(--ink);color:var(--cream);padding:.55rem 1.4rem;border-radius:40px;font-size:.82rem;font-weight:500;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;transition:background .2s;cursor:pointer;border:none;font-family:'Outfit',sans-serif}
 .nav-cta:hover{background:var(--warm)}
 
-/* ── PAGE HERO ─────────────────────────────────────────────────────────────── */
-.page-hero{padding:7rem 3rem 3rem;text-align:center;position:relative;overflow:hidden}
+/* PAGE HERO */
+.page-hero{padding:7rem 3rem 2.5rem;text-align:center;position:relative;overflow:hidden}
 .page-hero::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,.1) 0%,transparent 65%);pointer-events:none;z-index:0}
 .page-hero-inner{position:relative;z-index:1}
 .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--warm-light);color:var(--rust);padding:.35rem 1rem;border-radius:40px;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.2rem}
 .hero-badge::before{content:'✦';font-size:.6rem}
 .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.6rem);line-height:1.1;color:var(--ink);margin-bottom:1rem}
 .page-hero h1 em{font-style:italic;color:var(--warm)}
-.page-hero p{color:var(--muted);font-size:1rem;font-weight:300;line-height:1.7;max-width:560px;margin:0 auto 2rem}
+.page-hero p{color:var(--muted);font-size:1rem;font-weight:300;line-height:1.7;max-width:500px;margin:0 auto 2rem}
 
-/* ── STEPS BREADCRUMB ──────────────────────────────────────────────────────── */
-.steps-bar{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:0;padding-bottom:0}
+/* STEPS BAR */
+.steps-bar{display:flex;align-items:center;justify-content:center;gap:.5rem}
 .sbar-step{display:flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#c4b89a;transition:color .3s}
 .sbar-step.active{color:var(--warm)}
-.sbar-step.done{color:#a0c090}
+.sbar-step.done{color:#5cb87a}
 .sbar-dot{width:28px;height:28px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;transition:all .3s}
 .sbar-step.active .sbar-dot{background:var(--warm);color:var(--ink);border-color:var(--warm);box-shadow:0 0 0 4px rgba(200,169,110,.18)}
-.sbar-step.done .sbar-dot{background:#a0c090;color:#fff;border-color:#a0c090}
+.sbar-step.done .sbar-dot{background:#5cb87a;color:#fff;border-color:#5cb87a}
 .sbar-arrow{color:#ddd;font-size:.85rem;flex-shrink:0}
 
-/* ── MAIN LAYOUT ───────────────────────────────────────────────────────────── */
-.tryon-main{padding:0 3rem 5rem;max-width:1300px;margin:0 auto}
+/* MAIN */
+.tryon-main{padding:2rem 3rem 5rem;max-width:1300px;margin:0 auto}
 
-/* ── CATEGORY PILLS ────────────────────────────────────────────────────────── */
-.cat-section{text-align:center;margin-bottom:3rem}
-.cat-section-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+/* CATEGORY PILLS */
+.cat-section{text-align:center;margin-bottom:2.5rem}
+.cat-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
 .cat-pills{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
-.cat-pill{display:flex;align-items:center;gap:.55rem;padding:.6rem 1.4rem;border-radius:40px;border:1.5px solid rgba(26,23,20,.12);background:var(--card-bg);color:var(--muted);font-size:.84rem;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Outfit',sans-serif}
+.cat-pill{display:flex;align-items:center;gap:.55rem;padding:.6rem 1.5rem;border-radius:40px;border:1.5px solid rgba(26,23,20,.12);background:var(--card-bg);color:var(--muted);font-size:.84rem;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Outfit',sans-serif}
 .cat-pill:hover{border-color:rgba(200,169,110,.5);color:var(--warm)}
 .cat-pill.active{background:var(--ink);color:var(--cream);border-color:var(--ink);box-shadow:0 4px 16px rgba(26,23,20,.15)}
 .cat-pill-icon{font-size:1.1rem}
-.cat-hint{display:inline-flex;align-items:center;gap:.4rem;margin-top:1rem;font-size:.78rem;color:var(--muted);background:var(--warm-light);padding:.35rem 1rem;border-radius:20px}
-.cat-hint::before{content:'ℹ';font-size:.7rem;color:var(--warm)}
 
-/* ── MODEL BADGE ───────────────────────────────────────────────────────────── */
-.model-badge{display:inline-flex;align-items:center;gap:.5rem;margin:1rem auto 2.5rem;background:var(--card-bg);border:1px solid rgba(200,169,110,.25);border-radius:30px;padding:.4rem 1rem .4rem .5rem;font-size:.75rem;color:var(--muted)}
-.model-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.model-dot.green{background:#5cb87a;box-shadow:0 0 0 3px rgba(92,184,122,.18)}
-.model-dot.amber{background:var(--warm);box-shadow:0 0 0 3px rgba(200,169,110,.2)}
-.model-name{font-weight:600;color:var(--ink)}
+/* TWO-COLUMN LAYOUT */
+.tryon-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:2.5rem;align-items:start}
 
-/* ── UPLOAD GRID ───────────────────────────────────────────────────────────── */
-.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem}
-.upload-card{background:var(--card-bg);border:1.5px solid rgba(200,169,110,.18);border-radius:22px;overflow:hidden;transition:border-color .3s,box-shadow .3s}
-.upload-card:hover{border-color:rgba(200,169,110,.4);box-shadow:0 8px 28px rgba(26,23,20,.06)}
-.upload-card-head{padding:1.4rem 1.6rem 1rem;border-bottom:1px solid rgba(200,169,110,.1);display:flex;align-items:center;gap:.75rem}
-.upload-step-num{width:26px;height:26px;border-radius:50%;background:var(--warm-light);color:var(--rust);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.upload-card-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--ink)}
-.upload-card-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem}
-.upload-body{padding:1.4rem 1.6rem 1.6rem}
-.drop-zone{border:2px dashed rgba(200,169,110,.3);border-radius:16px;background:rgba(200,169,110,.03);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
+/* LEFT — YOUR PHOTO */
+.photo-card{background:var(--card-bg);border:1.5px solid rgba(200,169,110,.18);border-radius:22px;overflow:hidden;position:sticky;top:90px}
+.photo-card-head{padding:1.3rem 1.6rem 1rem;border-bottom:1px solid rgba(200,169,110,.1);display:flex;align-items:center;gap:.75rem}
+.step-badge{width:26px;height:26px;border-radius:50%;background:var(--warm-light);color:var(--rust);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.photo-card-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--ink)}
+.photo-card-body{padding:1.4rem 1.6rem 1.6rem}
+.drop-zone{border:2px dashed rgba(200,169,110,.3);border-radius:16px;background:rgba(200,169,110,.03);padding:3rem 1.5rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;min-height:260px}
 .drop-zone:hover,.drop-zone.drag-over{border-color:var(--warm);background:rgba(200,169,110,.07)}
-.drop-zone-icon{width:52px;height:52px;border-radius:50%;background:var(--warm-light);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
-.drop-zone-title{font-size:.88rem;font-weight:500;color:var(--ink)}
-.drop-zone-sub{font-size:.74rem;color:var(--muted)}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{width:56px;height:56px;border-radius:50%;background:var(--warm-light);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.dz-title{font-size:.9rem;font-weight:500;color:var(--ink)}
+.dz-sub{font-size:.74rem;color:var(--muted)}
 .preview-wrap{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(200,169,110,.2)}
-.preview-wrap img{width:100%;display:block;max-height:320px;object-fit:cover}
-.preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;transition:opacity .25s;cursor:pointer}
+.preview-wrap img{width:100%;display:block;max-height:380px;object-fit:cover}
+.preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity .25s;cursor:pointer}
 .preview-wrap:hover .preview-overlay{opacity:1}
-.preview-overlay span{color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.preview-badge{position:absolute;top:10px;right:10px;background:rgba(26,23,20,.75);backdrop-filter:blur(6px);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.28rem .7rem;border-radius:14px}
-.analysis-chip{display:inline-flex;align-items:center;gap:.35rem;margin:.3rem .2rem 0;background:var(--warm-light);color:var(--rust);padding:.22rem .7rem;border-radius:20px;font-size:.68rem;font-weight:600;letter-spacing:.06em}
-.analysis-row{margin-top:.9rem;display:flex;flex-wrap:wrap;gap:0}
-.analysis-desc{margin-top:.6rem;font-size:.78rem;color:var(--muted);line-height:1.55;padding:.7rem .9rem;background:rgba(200,169,110,.06);border-radius:10px;border-left:3px solid var(--warm)}
-.ai-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--warm);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
-.ai-badge::before{content:'🤖';font-size:.75rem}
-.upload-success{display:flex;align-items:center;gap:.5rem;margin-top:.9rem;font-size:.78rem;color:#5cb87a;font-weight:500}
-.upload-success::before{content:'✓';width:18px;height:18px;border-radius:50%;background:#5cb87a;color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.preview-overlay span{color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:rgba(0,0,0,.4);padding:.4rem 1rem;border-radius:20px}
+.upload-ok{display:flex;align-items:center;gap:.5rem;margin-top:.85rem;font-size:.8rem;color:#5cb87a;font-weight:500}
+.upload-ok::before{content:'✓';width:18px;height:18px;border-radius:50%;background:#5cb87a;color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
-/* ── SETTINGS ──────────────────────────────────────────────────────────────── */
-.settings-row{display:grid;grid-template-columns:1fr 1fr auto;gap:1.2rem;align-items:end;background:var(--card-bg);border:1px solid rgba(200,169,110,.15);border-radius:18px;padding:1.4rem 1.6rem;margin-bottom:2rem}
-.setting-group label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.setting-group input[type=range]{width:100%;accent-color:var(--warm)}
-.setting-group input[type=number]{width:100%;padding:.55rem .8rem;border:1.5px solid rgba(200,169,110,.25);border-radius:10px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);outline:none;transition:border-color .2s}
-.setting-group input[type=number]:focus{border-color:var(--warm)}
-.range-val{font-size:.8rem;color:var(--warm);font-weight:600;margin-top:.25rem}
+/* RIGHT — PRODUCT PICKER + GENERATE */
+.right-col{}
 
-/* ── GENERATE BUTTON ───────────────────────────────────────────────────────── */
-.gen-btn{display:flex;align-items:center;justify-content:center;gap:.7rem;width:100%;padding:1.05rem 2rem;background:linear-gradient(120deg,var(--warm) 0%,#e8a84a 100%);color:var(--ink);font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .28s;box-shadow:0 6px 24px rgba(200,169,110,.28);letter-spacing:.03em}
+/* PRODUCT PICKER */
+.picker-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem}
+.picker-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink)}
+.picker-title em{font-style:italic;color:var(--warm)}
+.picker-count{font-size:.75rem;color:var(--muted);background:var(--warm-light);padding:.25rem .75rem;border-radius:20px}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.product-card{background:var(--card-bg);border:2px solid transparent;border-radius:16px;overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
+.product-card:hover{border-color:rgba(200,169,110,.4);box-shadow:0 6px 20px rgba(26,23,20,.07);transform:translateY(-2px)}
+.product-card.selected{border-color:var(--warm);box-shadow:0 0 0 4px rgba(200,169,110,.15)}
+.product-card.hidden{display:none}
+.product-img{width:100%;aspect-ratio:3/4;overflow:hidden;background:#f3efe8}
+.product-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.product-card:hover .product-img img{transform:scale(1.06)}
+.product-card.selected .product-img img{transform:scale(1.03)}
+.product-sel-check{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--warm);color:var(--ink);font-size:.75rem;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(200,169,110,.4)}
+.product-card.selected .product-sel-check{display:flex}
+.product-badge-new{position:absolute;top:8px;left:8px;background:var(--rust);color:#fff;padding:.2rem .6rem;border-radius:14px;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.product-info{padding:.85rem .9rem}
+.product-name{font-weight:500;font-size:.83rem;color:var(--ink);margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-meta{font-size:.72rem;color:var(--muted)}
+.product-price{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--ink);margin-top:.3rem}
+
+/* SELECTED ITEM PREVIEW */
+.selected-preview{background:var(--card-bg);border:1.5px solid rgba(200,169,110,.25);border-radius:16px;padding:1.1rem 1.3rem;margin-bottom:1.5rem;display:none;align-items:center;gap:1rem}
+.selected-preview.show{display:flex}
+.sel-thumb{width:56px;height:70px;border-radius:10px;overflow:hidden;flex-shrink:0;border:1px solid rgba(200,169,110,.2)}
+.sel-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sel-info{flex:1;min-width:0}
+.sel-tag{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm);margin-bottom:.2rem}
+.sel-name{font-weight:500;font-size:.88rem;color:var(--ink)}
+.sel-price{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.sel-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:.3rem .6rem;border-radius:8px;font-family:'Outfit',sans-serif;transition:color .2s;flex-shrink:0}
+.sel-clear:hover{color:var(--rust)}
+
+/* GENERATE BUTTON */
+.gen-btn{display:flex;align-items:center;justify-content:center;gap:.7rem;width:100%;padding:1.1rem 2rem;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink);font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .28s;box-shadow:0 6px 24px rgba(200,169,110,.28);letter-spacing:.02em}
 .gen-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(200,169,110,.42)}
-.gen-btn:disabled{background:rgba(26,23,20,.08);color:#bbb;cursor:not-allowed;box-shadow:none;transform:none}
+.gen-btn:disabled{background:rgba(26,23,20,.08);color:#bbb;cursor:not-allowed;box-shadow:none;transform:none;font-family:'Outfit',sans-serif;font-size:1rem}
 .gen-btn-arrow{font-size:1.2rem;transition:transform .25s}
-.gen-btn:hover .gen-btn-arrow{transform:translateX(5px)}
-.gen-note{text-align:center;font-size:.74rem;color:var(--muted);margin-top:.65rem}
+.gen-btn:hover:not(:disabled) .gen-btn-arrow{transform:translateX(5px)}
+.gen-note{text-align:center;font-size:.74rem;color:var(--muted);margin-top:.6rem}
 
-/* ── LOADING STATE ─────────────────────────────────────────────────────────── */
-.loading-overlay{display:none;background:var(--cream);border:1.5px solid rgba(200,169,110,.2);border-radius:22px;padding:3rem 2rem;text-align:center;margin-bottom:2rem}
-.loading-overlay.show{display:block}
-.loading-spinner{width:52px;height:52px;border:3px solid var(--warm-light);border-top-color:var(--warm);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 1.2rem}
+/* LOADING */
+.loading-box{display:none;background:var(--card-bg);border:1.5px solid rgba(200,169,110,.2);border-radius:20px;padding:2.5rem 2rem;text-align:center;margin-bottom:2rem}
+.loading-box.show{display:block}
+.spinner{width:52px;height:52px;border:3px solid var(--warm-light);border-top-color:var(--warm);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 1.1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);margin-bottom:.4rem}
-.loading-sub{font-size:.82rem;color:var(--muted)}
-.loading-steps{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
-.lstep{font-size:.72rem;color:#ccc;letter-spacing:.07em;text-transform:uppercase;transition:color .3s}
+.loading-title{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink);margin-bottom:.3rem}
+.loading-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem}
+.lsteps{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap}
+.lstep{font-size:.7rem;color:#ccc;letter-spacing:.07em;text-transform:uppercase;transition:color .3s}
 .lstep.done{color:#5cb87a}
-.lstep.active{color:var(--warm)}
+.lstep.cur{color:var(--warm)}
 
-/* ── RESULT ────────────────────────────────────────────────────────────────── */
-.result-section{display:none;margin-bottom:3rem}
+/* RESULT */
+.result-section{display:none;margin-top:.5rem}
 .result-section.show{display:block}
-.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
-.result-title-wrap{display:flex;align-items:center;gap:.75rem}
-.result-live-dot{width:10px;height:10px;border-radius:50%;background:#5cb87a;box-shadow:0 0 0 4px rgba(92,184,122,.2);animation:pulse-dot 1.8s infinite}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 4px rgba(92,184,122,.2)}50%{box-shadow:0 0 0 8px rgba(92,184,122,.06)}}
-.result-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink)}
+.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:.8rem}
+.result-live{display:flex;align-items:center;gap:.7rem}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#5cb87a;box-shadow:0 0 0 4px rgba(92,184,122,.2);animation:pdot 1.8s infinite;flex-shrink:0}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 4px rgba(92,184,122,.2)}50%{box-shadow:0 0 0 8px rgba(92,184,122,.05)}}
+.result-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--ink)}
 .result-title em{font-style:italic;color:var(--warm)}
-.result-actions{display:flex;gap:.75rem}
+.result-btns{display:flex;gap:.7rem}
 .btn-dl{display:flex;align-items:center;gap:.4rem;background:var(--ink);color:var(--cream);padding:.6rem 1.3rem;border-radius:30px;font-size:.78rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:none;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .2s}
 .btn-dl:hover{background:var(--warm);color:var(--ink)}
 .btn-retry{display:flex;align-items:center;gap:.4rem;background:transparent;color:var(--muted);padding:.6rem 1.3rem;border-radius:30px;font-size:.78rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(26,23,20,.15);font-family:'Outfit',sans-serif;transition:all .2s}
 .btn-retry:hover{border-color:var(--warm);color:var(--warm)}
 
-/* ── RESULT 3-PANEL ─────────────────────────────────────────────────────────── */
-.result-triPanel{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:1.2rem;background:var(--card-bg);border:1.5px solid rgba(200,169,110,.2);border-radius:24px;padding:2rem;box-shadow:0 16px 50px rgba(26,23,20,.08)}
+/* RESULT 3-PANEL */
+.result-tri{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:1rem;background:var(--card-bg);border:1.5px solid rgba(200,169,110,.2);border-radius:22px;padding:1.8rem;box-shadow:0 16px 50px rgba(26,23,20,.07)}
 .rpanel{text-align:center}
-.rpanel-img{width:100%;aspect-ratio:2/3;border-radius:14px;overflow:hidden;background:#f3efe8;position:relative}
+.rpanel-img{width:100%;aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:#f3efe8;position:relative}
 .rpanel-img img{width:100%;height:100%;object-fit:cover;display:block}
-.rpanel-tag{display:inline-flex;align-items:center;gap:.3rem;margin-top:.85rem;padding:.28rem .75rem;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.rpanel-tag.person{background:rgba(26,23,20,.08);color:var(--ink)}
-.rpanel-tag.product{background:var(--warm-light);color:var(--rust)}
-.rpanel-tag.result{background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink)}
-.rpanel-name{font-size:.8rem;color:var(--muted);margin-top:.3rem}
-.r-op{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--warm);font-weight:700;flex-shrink:0;line-height:1;padding-bottom:2.8rem}
-.result-panel-star{position:absolute;top:10px;right:10px;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:14px}
+.rpanel-tag{display:inline-flex;align-items:center;gap:.25rem;margin-top:.75rem;padding:.25rem .7rem;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.rpanel-tag.p1{background:rgba(26,23,20,.07);color:var(--ink)}
+.rpanel-tag.p2{background:var(--warm-light);color:var(--rust)}
+.rpanel-tag.p3{background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink)}
+.rpanel-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+.r-op{font-family:'Playfair Display',serif;font-size:2.6rem;color:var(--warm);font-weight:700;flex-shrink:0;padding-bottom:2.6rem;line-height:1}
+.ai-star{position:absolute;top:8px;right:8px;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .65rem;border-radius:12px}
 
-/* ── DEBUG LOGS ─────────────────────────────────────────────────────────────── */
-.debug-section{margin-top:1rem}
-.debug-toggle{display:flex;align-items:center;gap:.5rem;background:none;border:1px solid rgba(200,169,110,.2);border-radius:10px;padding:.55rem 1rem;font-size:.75rem;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;width:100%}
-.debug-toggle:hover{border-color:var(--warm);color:var(--warm)}
-.debug-toggle svg{width:14px;height:14px;transition:transform .25s}
-.debug-toggle.open svg{transform:rotate(180deg)}
-.debug-body{display:none;background:#1a1714;border-radius:12px;padding:1.2rem;margin-top:.5rem;font-family:'Courier New',monospace;font-size:.72rem;line-height:1.7;max-height:240px;overflow-y:auto;color:#888}
-.debug-body.show{display:block}
-.log-info{color:#888}
-.log-success{color:#5cb87a}
-.log-warn{color:var(--warm)}
-.log-error{color:#e07070}
-
-/* ── FOOTER ────────────────────────────────────────────────────────────────── */
+/* FOOTER */
 footer{background:var(--ink);color:rgba(250,247,242,.5);padding:3rem;text-align:center;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
 footer strong{color:var(--warm)}
 
-/* ── RESPONSIVE ────────────────────────────────────────────────────────────── */
-@media(max-width:900px){
-  .upload-grid{grid-template-columns:1fr}
-  .settings-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
-  .result-triPanel{grid-template-columns:1fr;gap:.8rem}
-  .r-op{font-size:1.4rem;padding-bottom:0}
-  .tryon-main{padding:0 1.2rem 4rem}
+@media(max-width:960px){
+  .tryon-layout{grid-template-columns:1fr}
+  .photo-card{position:static}
+  .product-grid{grid-template-columns:repeat(3,1fr)}
+  .result-tri{grid-template-columns:1fr;gap:.6rem}
+  .r-op{padding-bottom:0;font-size:1.5rem}
+  .tryon-main{padding:1.5rem 1.2rem 4rem}
   nav{padding:1rem 1.4rem}
+}
+@media(max-width:540px){
+  .product-grid{grid-template-columns:repeat(2,1fr)}
+  .lsteps{gap:1rem}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">Fit<span>AI</span></a>
   <ul class="nav-links">
@@ -193,16 +195,16 @@ footer strong{color:var(--warm)}
   <a href="index.html" class="nav-cta">← Back to shop</a>
 </nav>
 
-<!-- PAGE HERO -->
+<!-- HERO -->
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="hero-badge">AI Virtual Try-On</div>
     <h1>See it on <em>you</em><br>before you buy</h1>
-    <p>Upload your photo, pick a category, upload any item — our AI dresses you in seconds. Free. No account needed.</p>
+    <p>Upload your photo, pick any item from our catalog — AI dresses you in seconds.</p>
     <div class="steps-bar">
-      <div class="sbar-step active" id="sbar1"><div class="sbar-dot">1</div>Pick category</div>
+      <div class="sbar-step active" id="sbar1"><div class="sbar-dot">1</div>Your photo</div>
       <div class="sbar-arrow">›</div>
-      <div class="sbar-step" id="sbar2"><div class="sbar-dot">2</div>Upload photos</div>
+      <div class="sbar-step" id="sbar2"><div class="sbar-dot">2</div>Pick item</div>
       <div class="sbar-arrow">›</div>
       <div class="sbar-step" id="sbar3"><div class="sbar-dot">3</div>Generate</div>
       <div class="sbar-arrow">›</div>
@@ -211,435 +213,413 @@ footer strong{color:var(--warm)}
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="tryon-main">
 
-  <!-- CATEGORY SELECTOR -->
+  <!-- CATEGORY FILTER -->
   <div class="cat-section">
-    <div class="cat-section-label">What do you want to try on?</div>
+    <div class="cat-label">Filter by category</div>
     <div class="cat-pills">
-      <button class="cat-pill active" data-cat="tops" onclick="selectCat(this)">
-        <span class="cat-pill-icon">👕</span> Tops
-      </button>
-      <button class="cat-pill" data-cat="bottoms" onclick="selectCat(this)">
-        <span class="cat-pill-icon">👖</span> Bottoms
-      </button>
-      <button class="cat-pill" data-cat="shoes" onclick="selectCat(this)">
-        <span class="cat-pill-icon">👟</span> Shoes
-      </button>
-      <button class="cat-pill" data-cat="dresses" onclick="selectCat(this)">
-        <span class="cat-pill-icon">👗</span> Dresses
-      </button>
-      <button class="cat-pill" data-cat="caps" onclick="selectCat(this)">
-        <span class="cat-pill-icon">🧢</span> Caps
-      </button>
-    </div>
-    <div>
-      <span class="cat-hint" id="cat-hint">Full-body or upper-body photo works best for tops</span>
-    </div>
-    <div>
-      <span class="model-badge">
-        <span class="model-dot green" id="model-dot"></span>
-        Using <span class="model-name" id="model-name">IDM-VTON</span> — <span id="model-desc">Upper-body specialist</span>
-      </span>
+      <button class="cat-pill active" data-cat="all" onclick="filterCat(this)">All</button>
+      <button class="cat-pill" data-cat="tops" onclick="filterCat(this)"><span class="cat-pill-icon">👕</span> Tops</button>
+      <button class="cat-pill" data-cat="bottoms" onclick="filterCat(this)"><span class="cat-pill-icon">👖</span> Bottoms</button>
+      <button class="cat-pill" data-cat="shoes" onclick="filterCat(this)"><span class="cat-pill-icon">👟</span> Shoes</button>
+      <button class="cat-pill" data-cat="caps" onclick="filterCat(this)"><span class="cat-pill-icon">🧢</span> Caps</button>
     </div>
   </div>
 
-  <!-- UPLOAD GRID -->
-  <div class="upload-grid">
+  <!-- TWO-COLUMN LAYOUT -->
+  <div class="tryon-layout">
 
-    <!-- Person photo -->
-    <div class="upload-card">
-      <div class="upload-card-head">
-        <div class="upload-step-num">1</div>
+    <!-- LEFT: PHOTO UPLOAD -->
+    <div class="photo-card">
+      <div class="photo-card-head">
+        <div class="step-badge">1</div>
         <div>
-          <div class="upload-card-title">Your Photo</div>
-          <div class="upload-card-sub" id="person-hint">Full-body or upper-body shot works best</div>
+          <div class="photo-card-title">Upload your photo</div>
         </div>
       </div>
-      <div class="upload-body">
-        <div class="drop-zone" id="person-drop" onclick="document.getElementById('person-input').click()">
-          <input type="file" id="person-input" accept="image/*" onchange="handleUpload('person', this)">
-          <div class="drop-zone-icon">📸</div>
-          <div class="drop-zone-title">Drop your photo here</div>
-          <div class="drop-zone-sub">JPG, PNG, WEBP · Any background works</div>
+      <div class="photo-card-body">
+        <div class="drop-zone" id="person-drop">
+          <input type="file" id="person-input" accept="image/*" onchange="handlePersonUpload(this)">
+          <div class="dz-icon">📸</div>
+          <div class="dz-title">Drop your photo here</div>
+          <div class="dz-sub">Or click to browse · JPG, PNG, WEBP</div>
         </div>
         <div id="person-preview" style="display:none">
           <div class="preview-wrap">
             <img id="person-img" src="" alt="Your photo">
-            <span class="preview-badge" id="person-size"></span>
             <div class="preview-overlay" onclick="document.getElementById('person-input').click()">
               <span>🔄 Change photo</span>
             </div>
           </div>
-          <div class="upload-success">Photo ready</div>
+          <div class="upload-ok">Photo ready — looking good!</div>
         </div>
       </div>
     </div>
 
-    <!-- Item upload -->
-    <div class="upload-card">
-      <div class="upload-card-head">
-        <div class="upload-step-num">2</div>
-        <div>
-          <div class="upload-card-title" id="item-card-title">Clothing Item</div>
-          <div class="upload-card-sub" id="item-hint">T-shirt, shirt, hoodie, jacket…</div>
-        </div>
-      </div>
-      <div class="upload-body">
-        <div class="drop-zone" id="item-drop" onclick="document.getElementById('item-input').click()">
-          <input type="file" id="item-input" accept="image/*" onchange="handleUpload('item', this)">
-          <div class="drop-zone-icon" id="item-icon">👕</div>
-          <div class="drop-zone-title">Drop the item here</div>
-          <div class="drop-zone-sub">Clear product photo works best</div>
-        </div>
-        <div id="item-preview" style="display:none">
-          <div class="preview-wrap">
-            <img id="item-img" src="" alt="Item">
-            <span class="preview-badge" id="item-size"></span>
-            <div class="preview-overlay" onclick="document.getElementById('item-input').click()">
-              <span>🔄 Change item</span>
-            </div>
-          </div>
-          <div class="upload-success">Item ready</div>
-          <!-- Simulated Groq analysis -->
-          <div id="analysis-block" style="display:none">
-            <div class="analysis-row">
-              <span class="analysis-chip" id="ac-cat">—</span>
-              <span class="analysis-chip" id="ac-color">—</span>
-              <span class="analysis-chip" id="ac-fit">—</span>
-              <span class="analysis-chip" id="ac-fabric">—</span>
-            </div>
-            <div class="analysis-desc">
-              <div class="ai-badge">Groq Analysis</div>
-              <span id="ac-desc">Analyzing…</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- RIGHT: PRODUCT PICKER + GENERATE -->
+    <div class="right-col">
 
-  <!-- SETTINGS ROW -->
-  <div class="settings-row">
-    <div class="setting-group">
-      <label>Denoising Steps <span style="color:var(--muted);font-weight:300;text-transform:none;letter-spacing:0">(higher = better)</span></label>
-      <input type="range" min="20" max="50" value="30" step="5" id="steps-range" oninput="document.getElementById('steps-val').textContent=this.value">
-      <div class="range-val"><span id="steps-val">30</span> steps</div>
-    </div>
-    <div class="setting-group">
-      <label>Seed</label>
-      <input type="number" value="42" min="0" max="9999" id="seed-input">
-    </div>
-    <div>
-      <label style="display:block;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">&nbsp;</label>
+      <!-- PRODUCT GRID -->
+      <div class="picker-head">
+        <div class="picker-title">Pick an <em>item</em> to try on</div>
+        <div class="picker-count" id="picker-count">11 items</div>
+      </div>
+
+      <div class="product-grid" id="product-grid">
+
+        <!-- TOPS -->
+        <div class="product-card" data-cat="tops" data-name="Classic White Tee" data-price="Rs. 2,200" data-img="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" alt="White Tee"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-badge-new">New</div>
+          <div class="product-info">
+            <div class="product-name">Classic White Tee</div>
+            <div class="product-meta">Cotton · Regular fit</div>
+            <div class="product-price">Rs. 2,200</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="tops" data-name="Oxford Button-Down" data-price="Rs. 5,500" data-img="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400&q=80" alt="Oxford Shirt"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Oxford Button-Down</div>
+            <div class="product-meta">Sky Blue · Slim fit</div>
+            <div class="product-price">Rs. 5,500</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="tops" data-name="Denim Overshirt" data-price="Rs. 6,800" data-img="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&q=80" alt="Denim Shirt"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-badge-new" style="background:var(--warm);color:var(--ink)">Hot</div>
+          <div class="product-info">
+            <div class="product-name">Denim Overshirt</div>
+            <div class="product-meta">Indigo · Relaxed fit</div>
+            <div class="product-price">Rs. 6,800</div>
+          </div>
+        </div>
+
+        <!-- BOTTOMS -->
+        <div class="product-card" data-cat="bottoms" data-name="Slim Fit Jeans" data-price="Rs. 7,200" data-img="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80" alt="Slim Jeans"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Slim Fit Jeans</div>
+            <div class="product-meta">Dark Indigo · Stretch</div>
+            <div class="product-price">Rs. 7,200</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="bottoms" data-name="Khaki Chinos" data-price="Rs. 5,900" data-img="https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&q=80" alt="Chinos"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-badge-new">New</div>
+          <div class="product-info">
+            <div class="product-name">Khaki Chinos</div>
+            <div class="product-meta">Tan · Tailored fit</div>
+            <div class="product-price">Rs. 5,900</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="bottoms" data-name="Black Trousers" data-price="Rs. 6,400" data-img="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&q=80" alt="Black Trousers"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Black Trousers</div>
+            <div class="product-meta">Black · Straight leg</div>
+            <div class="product-price">Rs. 6,400</div>
+          </div>
+        </div>
+
+        <!-- SHOES -->
+        <div class="product-card" data-cat="shoes" data-name="White Sneakers" data-price="Rs. 12,000" data-img="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&q=80" alt="White Sneakers"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-badge-new">New</div>
+          <div class="product-info">
+            <div class="product-name">White Sneakers</div>
+            <div class="product-meta">White · Low top</div>
+            <div class="product-price">Rs. 12,000</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="shoes" data-name="Performance Runners" data-price="Rs. 14,500" data-img="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="Runners"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Performance Runners</div>
+            <div class="product-meta">Grey/Orange · Mesh</div>
+            <div class="product-price">Rs. 14,500</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="shoes" data-name="Chukka Boots" data-price="Rs. 16,800" data-img="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&q=80" alt="Chukka Boots"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-badge-new" style="background:var(--warm);color:var(--ink)">Hot</div>
+          <div class="product-info">
+            <div class="product-name">Chukka Boots</div>
+            <div class="product-meta">Brown · Suede</div>
+            <div class="product-price">Rs. 16,800</div>
+          </div>
+        </div>
+
+        <!-- CAPS -->
+        <div class="product-card" data-cat="caps" data-name="Baseball Cap" data-price="Rs. 1,800" data-img="https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80" alt="Baseball Cap"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Baseball Cap</div>
+            <div class="product-meta">Navy · Adjustable</div>
+            <div class="product-price">Rs. 1,800</div>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="caps" data-name="Snapback Cap" data-price="Rs. 2,100" data-img="https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=400&q=80" onclick="selectProduct(this)">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=400&q=80" alt="Snapback"></div>
+          <div class="product-sel-check">✓</div>
+          <div class="product-info">
+            <div class="product-name">Snapback Cap</div>
+            <div class="product-meta">Black · One size</div>
+            <div class="product-price">Rs. 2,100</div>
+          </div>
+        </div>
+
+      </div><!-- /product-grid -->
+
+      <!-- SELECTED ITEM PREVIEW BAR -->
+      <div class="selected-preview" id="selected-preview">
+        <div class="sel-thumb"><img id="sel-thumb-img" src="" alt=""></div>
+        <div class="sel-info">
+          <div class="sel-tag">Selected item</div>
+          <div class="sel-name" id="sel-name">—</div>
+          <div class="sel-price" id="sel-price">—</div>
+        </div>
+        <button class="sel-clear" onclick="clearProduct()">✕ Change</button>
+      </div>
+
+      <!-- GENERATE BUTTON -->
       <button class="gen-btn" id="gen-btn" disabled onclick="generate()">
-        <span id="gen-icon">✦</span>
-        <span id="gen-label">Generate Try-On</span>
+        <span>✦</span>
+        <span id="gen-label">Try it on</span>
         <span class="gen-btn-arrow">→</span>
       </button>
-    </div>
-  </div>
-  <div class="gen-note" id="gen-note">Upload both images above to enable generation</div>
+      <div class="gen-note" id="gen-note">Upload your photo and pick an item to continue</div>
 
-  <!-- LOADING -->
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-title">Generating your try-on…</div>
-    <div class="loading-sub">Connecting to AI model — usually takes 20–60 seconds</div>
-    <div class="loading-steps">
-      <div class="lstep active" id="ls1">📸 Processing photo</div>
-      <div class="lstep" id="ls2">🤖 Groq analysis</div>
-      <div class="lstep" id="ls3">🎨 Generating</div>
-      <div class="lstep" id="ls4">✨ Finalizing</div>
-    </div>
-  </div>
-
-  <!-- RESULT -->
-  <div class="result-section" id="result-section">
-    <div class="result-header">
-      <div class="result-title-wrap">
-        <div class="result-live-dot"></div>
-        <div class="result-title">Your <em>try-on</em> result</div>
-      </div>
-      <div class="result-actions">
-        <button class="btn-retry" onclick="resetAll()">↺ Try another</button>
-        <a class="btn-dl" id="dl-btn" href="#" download="fitai_tryon_result.png">
-          ⬇ Download PNG
-        </a>
-      </div>
-    </div>
-
-    <!-- 3-panel result -->
-    <div class="result-triPanel">
-      <div class="rpanel">
-        <div class="rpanel-img">
-          <img id="r-person-img" src="" alt="Original">
+      <!-- LOADING -->
+      <div class="loading-box" id="loading-box">
+        <div class="spinner"></div>
+        <div class="loading-title">Generating your try-on…</div>
+        <div class="loading-sub">This usually takes 20–60 seconds</div>
+        <div class="lsteps">
+          <div class="lstep cur" id="ls1">📸 Processing</div>
+          <div class="lstep" id="ls2">🤖 Analyzing</div>
+          <div class="lstep" id="ls3">🎨 Generating</div>
+          <div class="lstep" id="ls4">✨ Finalizing</div>
         </div>
-        <div class="rpanel-tag person">📸 Original</div>
-        <div class="rpanel-name">Your photo</div>
       </div>
 
-      <div class="r-op">+</div>
-
-      <div class="rpanel">
-        <div class="rpanel-img">
-          <img id="r-item-img" src="" alt="Product">
+      <!-- RESULT -->
+      <div class="result-section" id="result-section">
+        <div class="result-header">
+          <div class="result-live">
+            <div class="live-dot"></div>
+            <div class="result-title">Your <em>result</em></div>
+          </div>
+          <div class="result-btns">
+            <button class="btn-retry" onclick="resetAll()">↺ Try another</button>
+            <a class="btn-dl" id="dl-btn" href="#" download="fitai_result.png">⬇ Download</a>
+          </div>
         </div>
-        <div class="rpanel-tag product">👕 Product</div>
-        <div class="rpanel-name" id="r-item-name">Selected item</div>
-      </div>
 
-      <div class="r-op">=</div>
-
-      <div class="rpanel">
-        <div class="rpanel-img">
-          <img id="r-result-img" src="" alt="Result">
-          <span class="result-panel-star">AI Result ✦</span>
+        <div class="result-tri">
+          <div class="rpanel">
+            <div class="rpanel-img"><img id="r-person" src="" alt="Original"></div>
+            <div class="rpanel-tag p1">📸 You</div>
+            <div class="rpanel-sub">Your photo</div>
+          </div>
+          <div class="r-op">+</div>
+          <div class="rpanel">
+            <div class="rpanel-img"><img id="r-item" src="" alt="Product"></div>
+            <div class="rpanel-tag p2">🛍 Item</div>
+            <div class="rpanel-sub" id="r-item-sub">Selected product</div>
+          </div>
+          <div class="r-op">=</div>
+          <div class="rpanel">
+            <div class="rpanel-img">
+              <img id="r-result" src="" alt="Result">
+              <span class="ai-star">AI Result ✦</span>
+            </div>
+            <div class="rpanel-tag p3">✨ Try-On</div>
+            <div class="rpanel-sub">That's you, dressed</div>
+          </div>
         </div>
-        <div class="rpanel-tag result">✨ AI Try-On</div>
-        <div class="rpanel-name">That's you, dressed</div>
-      </div>
-    </div>
-  </div>
+      </div><!-- /result-section -->
 
-  <!-- DEBUG LOGS -->
-  <div class="debug-section">
-    <button class="debug-toggle" id="debug-toggle" onclick="toggleDebug()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      🛠 Debug logs — click to inspect AI calls
-      <span style="margin-left:auto;font-size:.68rem;opacity:.6" id="log-count">0 entries</span>
-    </button>
-    <div class="debug-body" id="debug-body"></div>
-  </div>
-</div>
+    </div><!-- /right-col -->
+  </div><!-- /tryon-layout -->
+</div><!-- /tryon-main -->
 
 <footer>
   Built with <strong>Streamlit · Groq · OOTDiffusion · IDM-VTON</strong> — 100% open source
 </footer>
 
 <script>
-/* ── State ──────────────────────────────────────────────────────────────────── */
-let state = {
-  cat: 'tops',
-  personFile: null, personSrc: null,
-  itemFile:   null, itemSrc:   null,
-  logs: []
-};
+var state = { personSrc: null, personFile: null, product: null };
 
-const CAT_CONFIG = {
-  tops:    { icon:'👕', hint:'Full-body or upper-body photo works best', itemHint:'T-shirt, shirt, hoodie, jacket…', model:'IDM-VTON', modelDesc:'Upper-body specialist', modelDot:'green', title:'Top / Shirt' },
-  bottoms: { icon:'👖', hint:'Full-body photo works best for bottoms', itemHint:'Jeans, trousers, shorts, chinos…', model:'OOTDiffusion', modelDesc:'Lower-body specialist', modelDot:'green', title:'Bottom / Trouser' },
-  shoes:   { icon:'👟', hint:'Full-body photo showing feet works best', itemHint:'Sneakers, boots, heels, sandals…', model:'ShoeVTON', modelDesc:'Dedicated shoe model', modelDot:'amber', title:'Footwear' },
-  dresses: { icon:'👗', hint:'Full-body photo works best for dresses', itemHint:'Dress, jumpsuit, saree, co-ord…', model:'OOTDiffusion', modelDesc:'Full-body dress mode', modelDot:'green', title:'Dress / Full Outfit' },
-  caps:    { icon:'🧢', hint:'Upper-body or portrait photo works best', itemHint:'Baseball cap, snapback, beanie…', model:'Kolors VTO', modelDesc:'Accessory placement', modelDot:'amber', title:'Cap / Hat' },
-};
-
-/* ── Category select ────────────────────────────────────────────────────────── */
-function selectCat(btn) {
-  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+/* CATEGORY FILTER */
+function filterCat(btn) {
+  document.querySelectorAll('.cat-pill').forEach(function(p){ p.classList.remove('active'); });
   btn.classList.add('active');
-  state.cat = btn.dataset.cat;
-  const c = CAT_CONFIG[state.cat];
-  document.getElementById('cat-hint').textContent = c.hint;
-  document.getElementById('model-name').textContent = c.model;
-  document.getElementById('model-desc').textContent = c.modelDesc;
-  document.getElementById('model-dot').className = 'model-dot ' + c.modelDot;
-  document.getElementById('item-card-title').textContent = c.title;
-  document.getElementById('item-hint').textContent = c.itemHint;
-  document.getElementById('item-icon').textContent = c.icon;
-  document.getElementById('person-hint').textContent = c.hint;
-  addLog('info', `Category changed → ${state.cat} | Model: ${c.model}`);
-  resetResult();
-  updateSbar(2);
+  var cat = btn.dataset.cat;
+  var cards = document.querySelectorAll('.product-card');
+  var vis = 0;
+  cards.forEach(function(c){
+    if (cat === 'all' || c.dataset.cat === cat) { c.classList.remove('hidden'); vis++; }
+    else c.classList.add('hidden');
+  });
+  document.getElementById('picker-count').textContent = vis + ' items';
 }
 
-/* ── Upload handler ─────────────────────────────────────────────────────────── */
-function handleUpload(type, input) {
-  const file = input.files[0];
+/* PERSON UPLOAD */
+function handlePersonUpload(input) {
+  var file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
+  var reader = new FileReader();
   reader.onload = function(e) {
-    const src = e.target.result;
-    if (type === 'person') {
-      state.personFile = file; state.personSrc = src;
-      document.getElementById('person-drop').style.display = 'none';
-      document.getElementById('person-preview').style.display = 'block';
-      document.getElementById('person-img').src = src;
-      document.getElementById('r-person-img').src = src;
-      // Get image dims
-      const img = new Image();
-      img.onload = function() { document.getElementById('person-size').textContent = img.width + '×' + img.height + ' px'; };
-      img.src = src;
-      addLog('info', `Person photo loaded | File: ${file.name} | Size: ${(file.size/1024).toFixed(0)}KB`);
-    } else {
-      state.itemFile = file; state.itemSrc = src;
-      document.getElementById('item-drop').style.display = 'none';
-      document.getElementById('item-preview').style.display = 'block';
-      document.getElementById('item-img').src = src;
-      document.getElementById('r-item-img').src = src;
-      document.getElementById('r-item-name').textContent = file.name.replace(/\.[^/.]+$/,'');
-      const img = new Image();
-      img.onload = function() { document.getElementById('item-size').textContent = img.width + '×' + img.height + ' px'; };
-      img.src = src;
-      addLog('info', `Item image loaded | File: ${file.name} | Category: ${state.cat}`);
-      simulateGroqAnalysis();
-    }
+    state.personSrc = e.target.result;
+    state.personFile = file;
+    document.getElementById('person-drop').style.display = 'none';
+    document.getElementById('person-preview').style.display = 'block';
+    document.getElementById('person-img').src = e.target.result;
+    document.getElementById('r-person').src = e.target.result;
+    updateSbar(2);
     checkReady();
   };
   reader.readAsDataURL(file);
 }
 
-/* ── Simulate Groq analysis (demo) ─────────────────────────────────────────── */
-function simulateGroqAnalysis() {
-  const analysis = {
-    tops:    { cat:'Top', color:'White/Blue', fit:'Regular', fabric:'Cotton', desc:'A clean, regular-fit cotton shirt suitable for upper-body virtual try-on with a neutral base tone.' },
-    bottoms: { cat:'Bottom', color:'Dark Indigo', fit:'Slim', fabric:'Denim', desc:'Slim-fit denim jeans with a dark indigo wash, optimized for lower-body virtual placement.' },
-    shoes:   { cat:'Shoes', color:'White/Grey', fit:'N/A', fabric:'Canvas/Rubber', desc:'Clean low-top sneakers with rubber sole, white upper — suitable for foot-region try-on.' },
-    dresses: { cat:'Dress', color:'Blush', fit:'Regular', fabric:'Linen', desc:'A midi-length floral dress with a relaxed silhouette, ideal for full-body try-on placement.' },
-    caps:    { cat:'Accessory', color:'Navy', fit:'Adjustable', fabric:'Cotton', desc:'Classic structured baseball cap with adjustable strap — suitable for head/upper-body try-on.' },
+/* PRODUCT SELECT */
+function selectProduct(card) {
+  document.querySelectorAll('.product-card').forEach(function(c){ c.classList.remove('selected'); });
+  card.classList.add('selected');
+  state.product = {
+    name: card.dataset.name,
+    price: card.dataset.price,
+    img: card.dataset.img,
+    cat: card.dataset.cat
   };
-  const a = analysis[state.cat];
-  setTimeout(function() {
-    document.getElementById('analysis-block').style.display = 'block';
-    document.getElementById('ac-cat').textContent = a.cat;
-    document.getElementById('ac-color').textContent = a.color;
-    document.getElementById('ac-fit').textContent = a.fit;
-    document.getElementById('ac-fabric').textContent = a.fabric;
-    document.getElementById('ac-desc').textContent = a.desc;
-    addLog('success', `Groq analysis complete | Category: ${a.cat} | Color: ${a.color} | Fit: ${a.fit} | Fabric: ${a.fabric}`);
-    addLog('info', `Prompt generated: "${a.desc}"`);
-  }, 1200);
+  // Show selected preview bar
+  var bar = document.getElementById('selected-preview');
+  bar.classList.add('show');
+  document.getElementById('sel-thumb-img').src = card.dataset.img;
+  document.getElementById('sel-name').textContent = card.dataset.name;
+  document.getElementById('sel-price').textContent = card.dataset.price;
+  document.getElementById('r-item').src = card.dataset.img;
+  document.getElementById('r-item-sub').textContent = card.dataset.name;
+  if (state.personSrc) updateSbar(3);
+  checkReady();
 }
 
-/* ── Ready check ────────────────────────────────────────────────────────────── */
+function clearProduct() {
+  document.querySelectorAll('.product-card').forEach(function(c){ c.classList.remove('selected'); });
+  state.product = null;
+  document.getElementById('selected-preview').classList.remove('show');
+  checkReady();
+}
+
+/* READY CHECK */
 function checkReady() {
-  const ready = state.personFile && state.itemFile;
-  document.getElementById('gen-btn').disabled = !ready;
+  var ready = state.personSrc && state.product;
+  var btn = document.getElementById('gen-btn');
+  btn.disabled = !ready;
   document.getElementById('gen-note').textContent = ready
-    ? 'Adjust settings above if needed, then click Generate'
-    : 'Upload both images above to enable generation';
-  if (ready) updateSbar(3);
+    ? 'All set — click to try it on!'
+    : !state.personSrc ? 'Upload your photo to get started'
+    : 'Pick an item from the catalog above';
+  if (ready) {
+    document.getElementById('gen-label').textContent = 'Try on ' + state.product.name;
+    updateSbar(3);
+  }
 }
 
-/* ── Simulate generation ────────────────────────────────────────────────────── */
+/* GENERATE */
 function generate() {
-  document.getElementById('loading-overlay').classList.add('show');
+  document.getElementById('loading-box').classList.add('show');
   document.getElementById('result-section').classList.remove('show');
   document.getElementById('gen-btn').disabled = true;
   updateSbar(3);
-  addLog('info', '════════════════════════════════════════');
-  addLog('info', `TRY-ON REQUEST | Category: ${state.cat} | Model: ${CAT_CONFIG[state.cat].model}`);
-  addLog('info', `  Denoising steps: ${document.getElementById('steps-range').value}`);
-  addLog('info', `  Seed: ${document.getElementById('seed-input').value}`);
-  addLog('info', `MODEL SELECTED: ${CAT_CONFIG[state.cat].model} (${CAT_CONFIG[state.cat].modelDesc})`);
 
-  // Simulate step progression
-  const steps = ['ls1','ls2','ls3','ls4'];
-  const msgs = [
-    `SPACE ATTEMPT #1 → Connecting to ${CAT_CONFIG[state.cat].model}…`,
-    'Groq vision analysis → clothing description extracted',
-    'Diffusion running… denoising in progress',
-    'Finalizing output image…',
-  ];
-  let i = 0;
-  const interval = setInterval(function() {
-    if (i > 0) { document.getElementById(steps[i-1]).classList.remove('active'); document.getElementById(steps[i-1]).classList.add('done'); }
+  var steps = ['ls1','ls2','ls3','ls4'];
+  var i = 0;
+  var iv = setInterval(function() {
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('cur');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
     if (i < steps.length) {
-      document.getElementById(steps[i]).classList.add('active');
-      addLog(i === 3 ? 'success' : 'info', msgs[i]);
+      document.getElementById(steps[i]).classList.add('cur');
     }
     i++;
     if (i > steps.length) {
-      clearInterval(interval);
-      setTimeout(showResult, 600);
+      clearInterval(iv);
+      setTimeout(showResult, 500);
     }
   }, 1400);
 }
 
 function showResult() {
-  document.getElementById('loading-overlay').classList.remove('show');
-  // Use person image as placeholder result (in real app this would be the AI output)
-  document.getElementById('r-result-img').src = state.personSrc;
+  document.getElementById('loading-box').classList.remove('show');
+  // In real app, AI result image would come from backend
+  document.getElementById('r-result').src = state.personSrc;
   document.getElementById('dl-btn').href = state.personSrc;
   document.getElementById('result-section').classList.add('show');
   document.getElementById('gen-btn').disabled = false;
-  addLog('success', `SPACE SUCCESS | Result image ready`);
-  addLog('success', `TRY-ON COMPLETE ✓`);
-  addLog('info', '════════════════════════════════════════');
   updateSbar(4);
   document.getElementById('result-section').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-/* ── Step bar ───────────────────────────────────────────────────────────────── */
+/* SBAR */
 function updateSbar(active) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('sbar' + i);
+  for (var i = 1; i <= 4; i++) {
+    var el = document.getElementById('sbar' + i);
     el.classList.remove('active','done');
     if (i < active) el.classList.add('done');
     else if (i === active) el.classList.add('active');
   }
 }
 
-/* ── Reset ──────────────────────────────────────────────────────────────────── */
-function resetResult() {
-  document.getElementById('result-section').classList.remove('show');
-  document.getElementById('loading-overlay').classList.remove('show');
-  ['ls1','ls2','ls3','ls4'].forEach(id => {
-    document.getElementById(id).classList.remove('active','done');
-  });
-}
-
+/* RESET */
 function resetAll() {
-  state.personFile = null; state.personSrc = null;
-  state.itemFile   = null; state.itemSrc   = null;
+  state.personSrc = null; state.personFile = null; state.product = null;
   document.getElementById('person-drop').style.display = '';
   document.getElementById('person-preview').style.display = 'none';
-  document.getElementById('item-drop').style.display = '';
-  document.getElementById('item-preview').style.display = 'none';
-  document.getElementById('analysis-block').style.display = 'none';
+  document.querySelectorAll('.product-card').forEach(function(c){ c.classList.remove('selected'); });
+  document.getElementById('selected-preview').classList.remove('show');
   document.getElementById('gen-btn').disabled = true;
-  resetResult();
-  updateSbar(1);
-  addLog('info', 'Session reset — ready for new try-on');
-}
-
-/* ── Debug logs ─────────────────────────────────────────────────────────────── */
-function addLog(type, msg) {
-  const time = new Date().toTimeString().slice(0,8);
-  state.logs.push({type, msg, time});
-  const body = document.getElementById('debug-body');
-  const cls = type === 'success' ? 'log-success' : type === 'warn' ? 'log-warn' : type === 'error' ? 'log-error' : 'log-info';
-  const icon = type === 'success' ? '🟢' : type === 'warn' ? '🟡' : type === 'error' ? '🔴' : '   ';
-  body.innerHTML += `<div class="${cls}">[${time}] ${icon} ${msg}</div>`;
-  body.scrollTop = body.scrollHeight;
-  document.getElementById('log-count').textContent = state.logs.length + ' entries';
-}
-
-function toggleDebug() {
-  const body = document.getElementById('debug-body');
-  const btn  = document.getElementById('debug-toggle');
-  body.classList.toggle('show');
-  btn.classList.toggle('open');
-}
-
-/* ── Drag & drop ────────────────────────────────────────────────────────────── */
-['person-drop','item-drop'].forEach(function(id) {
-  const zone = document.getElementById(id);
-  if (!zone) return;
-  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
-  zone.addEventListener('drop', function(e) {
-    e.preventDefault(); zone.classList.remove('drag-over');
-    const type = id === 'person-drop' ? 'person' : 'item';
-    const input = document.getElementById(type + '-input');
-    input.files = e.dataTransfer.files;
-    handleUpload(type, input);
+  document.getElementById('gen-label').textContent = 'Try it on';
+  document.getElementById('gen-note').textContent = 'Upload your photo and pick an item to continue';
+  document.getElementById('result-section').classList.remove('show');
+  document.getElementById('loading-box').classList.remove('show');
+  ['ls1','ls2','ls3','ls4'].forEach(function(id){
+    document.getElementById(id).classList.remove('cur','done');
   });
-});
+  document.getElementById('ls1').classList.add('cur');
+  updateSbar(1);
+}
 
-// Init log
-addLog('info', 'FitAI Try-On initialized | Category: tops | Model: IDM-VTON');
+/* DRAG & DROP on photo */
+var dz = document.getElementById('person-drop');
+dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
+dz.addEventListener('drop', function(e){
+  e.preventDefault(); dz.classList.remove('drag-over');
+  var input = document.getElementById('person-input');
+  input.files = e.dataTransfer.files;
+  handlePersonUpload(input);
+});
 </script>
 </body>
 </html>
