@@ -1,30 +1,49 @@
 """
 FitAI Backend — tryon.py
 Core upper-body try-on logic using IDM-VTON via gradio_client.
-Uses the exact API signature provided.
+
+KEY FIX vs previous version:
+  - Client is now created ONCE at module load (matches the working notebook
+    pattern: `client = Client(...)` at top level), not recreated per-request.
+    Recreating the Client object on every call re-triggers the full Gradio
+    handshake (config fetch, queue join, heartbeat negotiation) which is
+    slower and more failure-prone under FastAPI's threaded request handling.
+  - Full exception traceback is logged BEFORE any cleanup runs, so the real
+    error is visible instead of being masked by a generic 500.
+  - session_dir cleanup no longer touches the Gradio-returned result_path
+    (that file lives in Gradio's own temp cache, not our session_dir) —
+    the previous version's `finally: shutil.rmtree(session_dir)` was safe,
+    but we now copy the result bytes into memory FIRST, before any cleanup,
+    so a slow/failed cleanup can never affect the response.
 """
 
 import os
 import io
 import base64
 import logging
-import tempfile
+import traceback
+import uuid
+import shutil
 from dataclasses import dataclass
+from pathlib import Path
 from PIL import Image
 from gradio_client import Client, handle_file
 
 logger = logging.getLogger("fitai.tryon")
 
+UPLOADS_DIR = Path(__file__).parent / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
+
 
 # ── Result dataclass ───────────────────────────────────────────────────────────
 @dataclass
 class TryOnResult:
-    result_img:  Image.Image   # AI try-on result
-    person_img:  Image.Image   # original person image
-    garment_img: Image.Image   # garment image
-    result_b64:  str           # base64 PNG of result
-    person_b64:  str           # base64 PNG of person
-    garment_b64: str           # base64 PNG of garment
+    result_img:  Image.Image
+    person_img:  Image.Image
+    garment_img: Image.Image
+    result_b64:  str
+    person_b64:  str
+    garment_b64: str
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -38,15 +57,28 @@ def _pil_to_b64(img: Image.Image) -> str:
     return base64.b64encode(buf.getvalue()).decode()
 
 
+# ── MODULE-LEVEL CLIENT — created once, matches working notebook pattern ──────
+_client: Client | None = None
+
+
 def _get_client() -> Client:
-    """Create IDM-VTON client with HF token if available."""
-    hf_token = os.environ.get("HF_TOKEN", "").strip()
-    space = "yisol/IDM-VTON"
-    if hf_token:
-        logger.info(f"Connecting to {space} with HF_TOKEN")
-        return Client(space, hf_token=hf_token)
-    logger.warning(f"Connecting to {space} WITHOUT HF_TOKEN (limited quota)")
-    return Client(space)
+    """
+    Return a singleton IDM-VTON client, creating it once on first use.
+    This matches the pattern in the working notebook script, where
+    `client = Client(...)` is created once at the top of the file and
+    reused for every call — avoiding repeated handshake/queue overhead.
+    """
+    global _client
+    if _client is None:
+        hf_token = os.environ.get("HF_TOKEN", "").strip()
+        space = "yisol/IDM-VTON"
+        logger.info(f"Creating IDM-VTON client (once) for space='{space}' | HF_TOKEN={'SET' if hf_token else 'NOT SET'}")
+        if hf_token:
+            _client = Client(space, hf_token=hf_token)
+        else:
+            logger.warning("No HF_TOKEN set — limited ZeroGPU quota")
+            _client = Client(space)
+    return _client
 
 
 # ── Main try-on function ───────────────────────────────────────────────────────
@@ -58,20 +90,10 @@ def run_upper_body_tryon(
     seed: int = 42,
 ) -> TryOnResult:
     """
-    Run upper-body try-on using IDM-VTON.
-
-    Args:
-        person_bytes       : Raw bytes of the person image
-        garment_bytes      : Raw bytes of the garment image
-        garment_description: Text description of the garment (improves accuracy)
-        denoise_steps      : Diffusion steps (20–50, higher = better quality)
-        seed               : Random seed for reproducibility
-
-    Returns:
-        TryOnResult with result image + both inputs as PIL images and base64 strings
+    Run upper-body try-on using IDM-VTON. Mirrors the exact working
+    notebook call signature and flow.
     """
 
-    # ── Convert bytes → PIL ──────────────────────────────────────────────────
     person_img  = _bytes_to_pil(person_bytes)
     garment_img = _bytes_to_pil(garment_bytes)
 
@@ -80,45 +102,58 @@ def run_upper_body_tryon(
     logger.info(f"Description   : '{garment_description}'")
     logger.info(f"Denoise steps : {denoise_steps} | Seed: {seed}")
 
-    with tempfile.TemporaryDirectory() as tmp:
-        # ── Save images to disk (gradio_client needs file paths) ─────────────
-        person_path  = os.path.join(tmp, "person.jpg")
-        garment_path = os.path.join(tmp, "garment.jpg")
+    session_id  = str(uuid.uuid4())
+    session_dir = UPLOADS_DIR / session_id
+    session_dir.mkdir(exist_ok=True)
 
+    person_path  = str(session_dir / "person.jpg")
+    garment_path = str(session_dir / "garment.jpg")
+
+    try:
         person_img.save(person_path, format="JPEG", quality=95)
         garment_img.save(garment_path, format="JPEG", quality=95)
         logger.info(f"Saved person  → {person_path}")
         logger.info(f"Saved garment → {garment_path}")
 
-        # ── Connect to IDM-VTON ───────────────────────────────────────────────
         client = _get_client()
 
-        # ── Call IDM-VTON (exact API signature as provided) ──────────────────
         logger.info("Calling IDM-VTON /tryon ...")
-        result = client.predict(
-            dict={"background": handle_file(person_path)},  # person image dict
-            garm_img=handle_file(garment_path),             # garment image
-            garment_des=garment_description,                # garment description
-            is_checked=True,                                # auto-mask
-            is_checked_crop=False,                          # no auto-crop
-            denoise_steps=denoise_steps,                    # diffusion steps
-            seed=seed,                                      # seed
-            api_name="/tryon"
-        )
+        try:
+            result = client.predict(
+                dict={"background": handle_file(person_path)},
+                garm_img=handle_file(garment_path),
+                garment_des=garment_description,
+                is_checked=True,
+                is_checked_crop=False,
+                denoise_steps=denoise_steps,
+                seed=seed,
+                api_name="/tryon",
+            )
+        except Exception as predict_err:
+            # Log the FULL traceback right here — this is the real failure point
+            logger.error("client.predict() raised an exception:")
+            logger.error(traceback.format_exc())
+            raise RuntimeError(f"IDM-VTON predict() failed: {predict_err}") from predict_err
+
         logger.info(f"Raw result from IDM-VTON: {result}")
 
-        # ── Extract result paths from tuple ──────────────────────────────────
-        # result is a tuple: (result_path, mask_path)
-        result_path = result[0]   # try-on result image
-        mask_path   = result[1]   # segmentation mask (not used)
+        if not result or len(result) < 1:
+            raise RuntimeError(f"IDM-VTON returned unexpected result: {result!r}")
+
+        result_path = result[0]
+        mask_path   = result[1] if len(result) > 1 else None
         logger.info(f"Result path: {result_path}")
         logger.info(f"Mask path  : {mask_path} (ignored)")
 
-        # ── Load result image ─────────────────────────────────────────────────
+        if not result_path or not os.path.exists(result_path):
+            raise RuntimeError(f"Result image path does not exist on disk: {result_path}")
+
+        # ── Load result image and immediately encode to bytes/base64 ─────────
+        # This happens BEFORE any cleanup, so cleanup can never corrupt the response.
         result_img = Image.open(result_path).convert("RGB")
+        result_img.load()  # force full decode into memory now, while file still exists
         logger.info(f"Result image size: {result_img.size[0]}x{result_img.size[1]} px")
 
-        # ── Encode all three to base64 for API response ───────────────────────
         result_b64  = _pil_to_b64(result_img)
         person_b64  = _pil_to_b64(person_img)
         garment_b64 = _pil_to_b64(garment_img)
@@ -131,3 +166,19 @@ def run_upper_body_tryon(
             person_b64=person_b64,
             garment_b64=garment_b64,
         )
+
+    except Exception:
+        # Log full traceback for ANY failure in this function, not just predict()
+        logger.error("run_upper_body_tryon() failed:")
+        logger.error(traceback.format_exc())
+        raise
+
+    finally:
+        # Clean up our own session dir (person.jpg/garment.jpg we created).
+        # This never touches result_path, which lives in Gradio's own cache.
+        try:
+            if session_dir.exists():
+                shutil.rmtree(session_dir, ignore_errors=True)
+                logger.info(f"Cleaned up session dir: {session_id}")
+        except Exception as cleanup_err:
+            logger.warning(f"Session cleanup failed (non-fatal): {cleanup_err}")
