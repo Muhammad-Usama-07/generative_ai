@@ -163,15 +163,18 @@ async def tryon_by_product(
     logger.info(f"  Person bytes : {len(person_bytes):,}")
     logger.info(f"  Garment bytes: {len(garment_bytes):,}")
 
-    # ── Run try-on ───────────────────────────────────────────────────────────
+    # ── Run try-on (in a thread — client.predict() blocks for 30-60s) ────────
     t0 = time.time()
     try:
-        result: TryOnResult = run_upper_body_tryon(
-            person_bytes=person_bytes,
-            garment_bytes=garment_bytes,
-            garment_description=product["name"],
-            denoise_steps=denoise_steps,
-            seed=seed,
+        import anyio
+        result: TryOnResult = await anyio.to_thread.run_sync(
+            lambda: run_upper_body_tryon(
+                person_bytes=person_bytes,
+                garment_bytes=garment_bytes,
+                garment_description=product["name"],
+                denoise_steps=denoise_steps,
+                seed=seed,
+            )
         )
     except Exception as e:
         logger.error(f"Try-on failed: {e}", exc_info=True)
