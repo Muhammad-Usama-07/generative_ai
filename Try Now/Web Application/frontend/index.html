@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --cream:#faf7f2;--ink:#1a1714;--warm:#c8a96e;--warm-light:#e8d9bb;
+    --rust:#b85c38;--sage:#4a6741;--slate:#2d3748;
+    --card-bg:#ffffff;--muted:#6b6560;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(250,247,242,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,.2)}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);letter-spacing:.04em}
+  .nav-logo span{color:var(--warm)}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--warm)}
+  .nav-cta{background:var(--ink);color:var(--cream);padding:.55rem 1.4rem;border-radius:40px;font-size:.82rem;font-weight:500;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;transition:background .2s;cursor:pointer;border:none;font-family:'Outfit',sans-serif}
+  .nav-cta:hover{background:var(--warm)}
+
+  /* HERO */
+  .hero{min-height:90vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 3rem 4rem;gap:4rem;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-20%;right:-10%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,.12) 0%,transparent 70%);pointer-events:none}
+  .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--warm-light);color:var(--rust);padding:.35rem 1rem;border-radius:40px;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-badge::before{content:'✦';font-size:.6rem}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.2rem);line-height:1.1;margin-bottom:1.5rem;color:var(--ink)}
+  .hero h1 em{font-style:italic;color:var(--warm)}
+  .hero p{color:var(--muted);font-size:1.05rem;line-height:1.7;max-width:480px;margin-bottom:2.5rem;font-weight:300}
+  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .btn-primary{background:var(--ink);color:var(--cream);padding:.8rem 2rem;border-radius:40px;font-size:.9rem;font-weight:500;text-decoration:none;letter-spacing:.06em;transition:all .25s;cursor:pointer;border:none;font-family:'Outfit',sans-serif}
+  .btn-primary:hover{background:var(--warm);transform:translateY(-2px)}
+  .btn-outline{background:transparent;color:var(--ink);padding:.8rem 2rem;border-radius:40px;font-size:.9rem;font-weight:500;text-decoration:none;letter-spacing:.06em;border:1.5px solid rgba(26,23,20,.25);transition:all .25s}
+  .btn-outline:hover{border-color:var(--warm);color:var(--warm)}
+  .hero-visual{position:relative;height:520px}
+  .hero-img-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;height:100%}
+  .h-card{border-radius:20px;overflow:hidden;position:relative;background:#fff}
+  .h-card:nth-child(1){border-radius:20px 20px 4px 20px}
+  .h-card:nth-child(2){border-radius:20px 20px 20px 4px;margin-top:40px}
+  .h-card:nth-child(3){border-radius:4px 20px 20px 20px;margin-top:-40px}
+  .h-card:nth-child(4){border-radius:20px 4px 20px 20px}
+  .h-card img{width:100%;height:100%;object-fit:cover;display:block}
+  .h-card-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;padding:1.2rem .9rem .7rem;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+  .hero-stats{display:flex;gap:2rem;margin-top:2.5rem}
+  .stat{text-align:center}
+  .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--ink)}
+  .stat-label{font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+
+  /* SECTION SHARED */
+  section{padding:6rem 3rem}
+  .section-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--warm);margin-bottom:.75rem}
+  .section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.2;margin-bottom:1rem;color:var(--ink)}
+  .section-title em{font-style:italic;color:var(--warm)}
+  .section-sub{color:var(--muted);font-size:1rem;line-height:1.7;max-width:540px;font-weight:300}
+
+  /* BEFORE / AFTER SHOWCASE */
+  .showcase-section{background:#fff;text-align:center}
+  .showcase-section .section-title,.showcase-section .section-sub{text-align:center;margin-left:auto;margin-right:auto}
+  .showcase-section .section-sub{margin-bottom:3.5rem}
+  .ba-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:1100px;margin:0 auto}
+  .ba-card{border-radius:22px;overflow:hidden;border:1px solid rgba(200,169,110,.18);background:var(--cream);box-shadow:0 10px 40px rgba(26,23,20,.06);transition:transform .3s,box-shadow .3s}
+  .ba-card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(26,23,20,.12)}
+  .ba-slider{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;cursor:ew-resize;user-select:none}
+  .ba-slider img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  .ba-after{clip-path:inset(0 0 0 50%)}
+  .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.1);transform:translateX(-50%);pointer-events:none}
+  .ba-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231a1714' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5'/%3E%3Cpath d='M16 7l5 5-5 5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
+  .ba-tag{position:absolute;top:14px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:20px;z-index:3;pointer-events:none}
+  .ba-tag.before{left:14px;background:rgba(26,23,20,.7);color:#fff}
+  .ba-tag.after{right:14px;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink)}
+  .ba-info{padding:1.3rem 1.4rem 1.5rem;text-align:left}
+  .ba-item-name{font-weight:500;font-size:1rem;color:var(--ink);margin-bottom:.2rem}
+  .ba-item-meta{font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
+  .ba-hint{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--warm);letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+  .ba-hint svg{width:14px;height:14px}
+  .showcase-cta{margin-top:3rem}
+
+  /* FORMULA: ORIGINAL + PRODUCT = RESULT */
+  .formula-section{background:var(--cream);text-align:center}
+  .formula-section .section-title,.formula-section .section-sub{text-align:center;margin-left:auto;margin-right:auto}
+  .formula-section .section-sub{margin-bottom:3.5rem}
+  .formula-grid{display:flex;align-items:center;justify-content:center;gap:1.2rem;max-width:1000px;margin:0 auto;flex-wrap:wrap}
+  .formula-panel{flex:1;min-width:200px;max-width:240px}
+  .formula-card{border-radius:18px;overflow:hidden;border:1px solid rgba(200,169,110,.18);background:#fff;box-shadow:0 8px 28px rgba(26,23,20,.06)}
+  .formula-img-wrap{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#f3efe8}
+  .formula-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .formula-label{padding:.85rem 1rem;text-align:left}
+  .formula-label-tag{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm);margin-bottom:.15rem}
+  .formula-label-name{font-size:.85rem;font-weight:500;color:var(--ink)}
+  .formula-panel.result .formula-card{border:2px solid var(--warm);box-shadow:0 12px 36px rgba(200,169,110,.22)}
+  .formula-panel.result .formula-label-tag{color:var(--rust)}
+  .formula-op{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--warm);font-weight:700;flex-shrink:0;padding-bottom:2.2rem}
+  .formula-badge-match{position:absolute;top:10px;right:10px;background:rgba(26,23,20,.78);backdrop-filter:blur(6px);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .65rem;border-radius:14px;display:flex;align-items:center;gap:.3rem}
+  .formula-badge-match svg{width:11px;height:11px}
+  .formula-badge-result{position:absolute;top:10px;right:10px;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:14px}
+  .formula-mobile-note{display:none;font-size:.78rem;color:var(--muted);margin-top:1.5rem}
+  @media (max-width:760px){
+    .formula-grid{gap:.6rem}
+    .formula-op{font-size:1.6rem;padding-bottom:1.6rem}
+    .formula-panel{min-width:90px}
+    .formula-label-name{font-size:.72rem}
+    .formula-label-tag{font-size:.58rem}
+  }
+
+
+  .products-header{text-align:center;margin-bottom:3rem}
+  .products-header .section-sub{margin:0 auto}
+  .cat-tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:3rem;flex-wrap:wrap}
+  .cat-tab{padding:.5rem 1.4rem;border-radius:40px;font-size:.82rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(26,23,20,.15);background:transparent;color:var(--muted);transition:all .2s}
+  .cat-tab.active,.cat-tab:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+  .grid-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+  .product-item{display:none}
+  .product-item.visible{display:block}
+  .product-card{background:var(--card-bg);border-radius:18px;overflow:hidden;border:1px solid rgba(200,169,110,.15);transition:transform .25s,box-shadow .25s;cursor:pointer}
+  .product-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(26,23,20,.1)}
+  .product-thumb{height:280px;position:relative;overflow:hidden;background:#f3efe8}
+  .product-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+  .product-card:hover .product-thumb img{transform:scale(1.06)}
+  .product-badge{position:absolute;top:12px;left:12px;background:var(--rust);color:#fff;padding:.25rem .75rem;border-radius:20px;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;z-index:2}
+  .product-tryon-tag{position:absolute;bottom:12px;right:12px;background:rgba(26,23,20,.78);backdrop-filter:blur(6px);color:#fff;padding:.3rem .8rem;border-radius:20px;font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:0;transition:opacity .25s;z-index:2}
+  .product-card:hover .product-tryon-tag{opacity:1}
+  .product-info{padding:1.2rem}
+  .product-name{font-weight:500;font-size:.95rem;margin-bottom:.3rem;color:var(--ink)}
+  .product-meta{font-size:.8rem;color:var(--muted)}
+  .product-price{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-top:.5rem}
+
+  /* TRY-ON SECTION */
+  .tryon-section{background:linear-gradient(135deg,#1a1714 0%,#2d2520 50%,#1a1714 100%);position:relative;overflow:hidden;text-align:center}
+  .tryon-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,.08) 0%,transparent 70%);pointer-events:none}
+  .tryon-section .section-tag{color:var(--warm)}
+  .tryon-section .section-title{color:var(--cream);margin:0 auto 1rem;max-width:700px}
+  .tryon-section .section-sub{color:rgba(250,247,242,.55);margin:0 auto 3rem;max-width:520px}
+  .tryon-showcase{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;max-width:980px;margin:0 auto 3.5rem;position:relative;z-index:1}
+  .tryon-card{border-radius:18px;overflow:hidden;border:1px solid rgba(200,169,110,.15);background:rgba(255,255,255,.04);transition:all .3s}
+  .tryon-card:hover{border-color:var(--warm);background:rgba(200,169,110,.08);transform:scale(1.04)}
+  .tryon-thumb{height:150px;overflow:hidden;background:#15120f}
+  .tryon-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:.92}
+  .tryon-info{padding:.85rem}
+  .tryon-info p{font-size:.78rem;font-weight:500;color:rgba(250,247,242,.85);margin-bottom:.2rem}
+  .tryon-info span{font-size:.66rem;color:var(--warm);text-transform:uppercase;letter-spacing:.07em}
+  .tryon-cta-wrap{position:relative;z-index:1}
+  .btn-tryon{display:inline-flex;align-items:center;gap:.75rem;background:linear-gradient(120deg,var(--warm),#e8a84a);color:var(--ink);padding:1.1rem 2.8rem;border-radius:60px;font-size:1rem;font-weight:600;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all .3s;box-shadow:0 8px 30px rgba(200,169,110,.3);font-family:'Outfit',sans-serif}
+  .btn-tryon:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 16px 50px rgba(200,169,110,.45)}
+  .btn-tryon-arrow{font-size:1.3rem;transition:transform .25s}
+  .btn-tryon:hover .btn-tryon-arrow{transform:translateX(5px)}
+  .tryon-note{margin-top:1.2rem;font-size:.78rem;color:rgba(250,247,242,.35);letter-spacing:.06em;text-transform:uppercase}
+
+  /* HOW IT WORKS */
+  .how-section{background:var(--cream)}
+  .how-section .section-title,.how-section .section-sub{text-align:center;margin-left:auto;margin-right:auto}
+  .how-section .section-sub{margin-bottom:4rem}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative}
+  .steps::before{content:'';position:absolute;top:40px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,var(--warm-light),var(--warm-light),transparent);z-index:0}
+  .step-item{text-align:center;position:relative;z-index:1}
+  .step-num{width:80px;height:80px;border-radius:50%;background:var(--card-bg);border:2px solid var(--warm-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:2rem;box-shadow:0 4px 20px rgba(200,169,110,.15)}
+  .step-title{font-weight:600;font-size:.9rem;letter-spacing:.05em;color:var(--ink);margin-bottom:.5rem;text-transform:uppercase}
+  .step-desc{font-size:.83rem;color:var(--muted);line-height:1.6;font-weight:300}
+
+  footer{background:var(--ink);color:rgba(250,247,242,.5);padding:3rem;text-align:center;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+  footer strong{color:var(--warm)}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;padding-top:7rem}
+    .tryon-showcase{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:1fr 1fr}
+    .steps::before{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Fit<span>AI</span></div>
+  <ul class="nav-links">
+    <li><a href="#products">Shop</a></li>
+    <li><a href="#tryon">Try-On</a></li>
+    <li><a href="#how">How it works</a></li>
+  </ul>
+  <button class="nav-cta" onclick="sendPrompt('Open the virtual try-on page')">Try it free</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">AI-Powered Fashion</div>
+    <h1>Wear it before<br>you <em>buy it.</em></h1>
+    <p>Shirts, pants, caps, and shoes — browse the essentials, then virtually try them on using your own photo. Powered by open-source AI.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="sendPrompt('Open the virtual try-on page')">Try it now — free</button>
+      <a href="#products" class="btn-outline">Browse collection</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Categories</div></div>
+      <div class="stat"><div class="stat-num">12k+</div><div class="stat-label">Try-ons daily</div></div>
+      <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-img-grid">
+      <div class="h-card">
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80" alt="Shirt">
+        <div class="h-card-label">Shirts</div>
+      </div>
+      <div class="h-card">
+        <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80" alt="Pants">
+        <div class="h-card-label">Pants</div>
+      </div>
+      <div class="h-card">
+        <img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?w=500&q=80" alt="Cap">
+        <div class="h-card-label">Caps</div>
+      </div>
+      <div class="h-card">
+        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&q=80" alt="Shoes">
+        <div class="h-card-label">Shoes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" style="background:#fff;padding:6rem 3rem">
+  <div class="products-header">
+    <div class="section-tag">Collection</div>
+    <h2 class="section-title">Shop the <em>essentials</em></h2>
+    <p class="section-sub">Shirts, trousers, caps, and shoes — all virtually try-onable in seconds.</p>
+  </div>
+
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="filterCat('all',this)">All</button>
+    <button class="cat-tab" onclick="filterCat('shirts',this)">Shirts</button>
+    <button class="cat-tab" onclick="filterCat('pants',this)">Pants</button>
+    <button class="cat-tab" onclick="filterCat('caps',this)">Caps</button>
+    <button class="cat-tab" onclick="filterCat('shoes',this)">Shoes</button>
+  </div>
+
+  <div class="grid-items" id="productGrid">
+
+    <!-- SHIRTS -->
+    <div class="product-item visible" data-cat="shirts">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">New</span>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80" alt="Classic White Tee">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Classic White Tee</div>
+          <div class="product-meta">100% Cotton · Regular fit</div>
+          <div class="product-price">Rs. 2,200</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="shirts">
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=600&q=80" alt="Oxford Shirt">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Oxford Button-Down</div>
+          <div class="product-meta">Sky Blue · Slim fit</div>
+          <div class="product-price">Rs. 5,500</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="shirts">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">Hot</span>
+          <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80" alt="Denim Shirt">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Denim Overshirt</div>
+          <div class="product-meta">Indigo · Relaxed fit</div>
+          <div class="product-price">Rs. 6,800</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANTS -->
+    <div class="product-item visible" data-cat="pants">
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&q=80" alt="Slim Jeans">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Slim Fit Jeans</div>
+          <div class="product-meta">Dark Indigo · Stretch denim</div>
+          <div class="product-price">Rs. 7,200</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="pants">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">New</span>
+          <img src="https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80" alt="Chino Trousers">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Khaki Chinos</div>
+          <div class="product-meta">Tan · Tailored fit</div>
+          <div class="product-price">Rs. 5,900</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="pants">
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&q=80" alt="Black Trousers">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Tailored Black Trousers</div>
+          <div class="product-meta">Black · Straight leg</div>
+          <div class="product-price">Rs. 6,400</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPS -->
+    <div class="product-item visible" data-cat="caps">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">Sale</span>
+          <img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600&q=80" alt="Baseball Cap">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Classic Baseball Cap</div>
+          <div class="product-meta">Navy · Adjustable strap</div>
+          <div class="product-price">Rs. 1,800</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="caps">
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=600&q=80" alt="Snapback Cap">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Snapback Cap</div>
+          <div class="product-meta">Black · One size</div>
+          <div class="product-price">Rs. 2,100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOES -->
+    <div class="product-item visible" data-cat="shoes">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">New</span>
+          <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80" alt="White Sneakers">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Minimal White Sneakers</div>
+          <div class="product-meta">White · Low top</div>
+          <div class="product-price">Rs. 12,000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="shoes">
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80" alt="Running Shoes">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Performance Runners</div>
+          <div class="product-meta">Grey/Orange · Mesh</div>
+          <div class="product-price">Rs. 14,500</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-item visible" data-cat="shoes">
+      <div class="product-card">
+        <div class="product-thumb">
+          <span class="product-badge">Hot</span>
+          <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=600&q=80" alt="Leather Boots">
+          <span class="product-tryon-tag">Try it on →</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Leather Chukka Boots</div>
+          <div class="product-meta">Brown · Suede sole</div>
+          <div class="product-price">Rs. 16,800</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FORMULA: ORIGINAL + PRODUCT = RESULT -->
+<section class="formula-section">
+  <div class="section-tag" style="display:block">✦ How it looks on you</div>
+  <h2 class="section-title">Your photo<br><em>+ any product</em> = your new look</h2>
+  <p class="section-sub">No guesswork. See exactly how an item will look on your body before you commit.</p>
+
+  <div class="formula-grid">
+    <div class="formula-panel">
+      <div class="formula-card">
+        <div class="formula-img-wrap">
+          <img src="imgs/people/m3.jpg" alt="Original photo">
+        </div>
+        <div class="formula-label">
+          <div class="formula-label-tag">Step 1</div>
+          <div class="formula-label-name">Your photo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-op">+</div>
+
+    <div class="formula-panel">
+      <div class="formula-card">
+        <div class="formula-img-wrap">
+          <img src="imgs/cloths/s1-removebg-preview.jpg" alt="Product">
+          <span class="formula-badge-match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Selected</span>
+        </div>
+        <div class="formula-label">
+          <div class="formula-label-tag">Step 2</div>
+          <div class="formula-label-name">Oxford Button-Down</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-op">=</div>
+
+    <div class="formula-panel result">
+      <div class="formula-card">
+        <div class="formula-img-wrap">
+          <img src="imgs/results/r3.webp" alt="Result">
+          <span class="formula-badge-result">AI Result</span>
+        </div>
+        <div class="formula-label">
+          <div class="formula-label-tag">Step 3</div>
+          <div class="formula-label-name">That's you, dressed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="formula-mobile-note">Swipe to see each step</p>
+</section>
+
+<!-- BEFORE / AFTER SHOWCASE -->
+<section class="showcase-section">
+  <div class="section-tag" style="display:block">✦ Compare instantly</div>
+  <h2 class="section-title">Skeptical?<br><em>Drag and see.</em></h2>
+  <p class="section-sub">The exact same photo — one side untouched, the other dressed by AI. Decide for yourself.</p>
+
+  <div class="ba-grid">
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="imgs/people/m2.jpg" alt="Before">
+        <img class="ba-after" src="imgs/results/image (3).jpg" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Classic White Tee</div>
+        <div class="ba-item-meta">Applied in 9 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="imgs/people/m3.jpg" alt="Before">
+        <img class="ba-after" src="imgs/results/r3.webp" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Slim Fit Jeans</div>
+        <div class="ba-item-meta">Applied in 11 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-slider" data-ba>
+        <img class="ba-before" src="imgs/people/m1.jpg" alt="Before">
+        <img class="ba-after" src="imgs/results/r4.jpg" alt="After">
+        <span class="ba-tag before">Original</span>
+        <span class="ba-tag after">AI Try-On</span>
+        <div class="ba-handle"></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-item-name">Baseball Cap</div>
+        <div class="ba-item-meta">Applied in 7 seconds</div>
+        <div class="ba-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>
+          Drag to compare
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase-cta">
+    <button class="btn-primary" onclick="sendPrompt('Open the virtual try-on page')" style="padding:1rem 2.6rem;font-size:.95rem">
+      Try it with your own photo
+    </button>
+  </div>
+</section>
+
+<!-- TRY-ON CTA -->
+<section id="tryon" class="tryon-section" style="padding:7rem 3rem">
+  <div class="section-tag">✦ AI Virtual Try-On</div>
+  <h2 class="section-title">See it on <em>you.</em><br>Before you decide.</h2>
+  <p class="section-sub">Upload your photo, pick any item from our collection, and our AI will show you exactly how it looks on your body — in seconds.</p>
+
+  <div class="tryon-showcase">
+    <div class="tryon-card">
+      <div class="tryon-thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&q=80" alt="Shirt"></div>
+      <div class="tryon-info"><p>White Tee</p><span>Try it on →</span></div>
+    </div>
+    <div class="tryon-card">
+      <div class="tryon-thumb"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&q=80" alt="Jeans"></div>
+      <div class="tryon-info"><p>Slim Jeans</p><span>Try it on →</span></div>
+    </div>
+    <div class="tryon-card">
+      <div class="tryon-thumb"><img src="https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=300&q=80" alt="Chinos"></div>
+      <div class="tryon-info"><p>Khaki Chinos</p><span>Try it on →</span></div>
+    </div>
+    <div class="tryon-card">
+      <div class="tryon-thumb"><img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?w=300&q=80" alt="Cap"></div>
+      <div class="tryon-info"><p>Baseball Cap</p><span>Try it on →</span></div>
+    </div>
+    <div class="tryon-card">
+      <div class="tryon-thumb"><img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&q=80" alt="Sneakers"></div>
+      <div class="tryon-info"><p>White Sneakers</p><span>Try it on →</span></div>
+    </div>
+  </div>
+
+  <div class="tryon-cta-wrap">
+    <button class="btn-tryon" onclick="sendPrompt('Open the virtual try-on page')">
+      Try it on yourself
+      <span class="btn-tryon-arrow">→</span>
+    </button>
+    <p class="tryon-note">No account needed · Free · Powered by open-source AI</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="section-tag" style="display:block;text-align:center">How it works</div>
+  <h2 class="section-title">From browse to<br><em>virtually dressed</em> in 4 steps</h2>
+  <p class="section-sub">Powered by Groq + open-source virtual try-on models. No GPU required.</p>
+
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num">📸</div>
+      <div class="step-title">Upload Photo</div>
+      <div class="step-desc">A full-body shot gives the best results — any background works.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">👕</div>
+      <div class="step-title">Pick an Item</div>
+      <div class="step-desc">Choose a shirt, pants, cap, or shoes from our catalog.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">🤖</div>
+      <div class="step-title">AI Processes</div>
+      <div class="step-desc">Groq analyzes the item, the right model composites it onto your photo.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">✨</div>
+      <div class="step-title">See & Download</div>
+      <div class="step-desc">View the result instantly and download or share your try-on image.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built with <strong>Streamlit · Groq · Open-Source AI</strong> — 100% open source
+</footer>
+
+<script>
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-item').forEach(item => {
+    if (cat === 'all' || item.dataset.cat === cat) {
+      item.classList.add('visible');
+    } else {
+      item.classList.remove('visible');
+    }
+  });
+}
+
+function sendPrompt(text) {
+  if (window.parent) {
+    window.parent.postMessage({type: 'streamlit:setComponentValue', value: text}, '*');
+  }
+}
+
+document.querySelectorAll('[data-ba]').forEach(function(slider) {
+  const after = slider.querySelector('.ba-after');
+  const handle = slider.querySelector('.ba-handle');
+  let dragging = false;
+
+  function setPosition(clientX) {
+    const rect = slider.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    handle.style.left = pct + '%';
+  }
+
+  slider.addEventListener('mousedown', function(e) { dragging = true; setPosition(e.clientX); });
+  window.addEventListener('mousemove', function(e) { if (dragging) setPosition(e.clientX); });
+  window.addEventListener('mouseup', function() { dragging = false; });
+
+  slider.addEventListener('touchstart', function(e) { dragging = true; setPosition(e.touches[0].clientX); });
+  slider.addEventListener('touchmove', function(e) { if (dragging) setPosition(e.touches[0].clientX); });
+  slider.addEventListener('touchend', function() { dragging = false; });
+
+  // Subtle auto-demo sweep on load to hint interactivity
+  let demoPos = 50, demoDir = 1, demoTicks = 0;
+  const demo = setInterval(function() {
+    if (dragging) return;
+    demoPos += demoDir * 0.6;
+    if (demoPos >= 68 || demoPos <= 32) demoDir *= -1;
+    after.style.clipPath = `inset(0 0 0 ${demoPos}%)`;
+    handle.style.left = demoPos + '%';
+    demoTicks++;
+    if (demoTicks > 90) { clearInterval(demo); after.style.clipPath = 'inset(0 0 0 50%)'; handle.style.left = '50%'; }
+  }, 30);
+});
+</script>
+</body>
+</html>
