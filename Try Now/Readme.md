@@ -1,166 +1,297 @@
 # 👗 FitAI — AI Virtual Try-On
 
-> Browse fashion. Pick a style. See it on **you** — before you buy it.
+> Upload your photo. Pick any item. See it on **you** — before you buy.
 
-FitAI is a multi-page Streamlit web app that lets users virtually try on clothing, shoes, and accessories using open-source AI models. No GPU required. No paid APIs. Completely free to run.
+FitAI is a full-stack AI virtual try-on web application. Users upload a personal photo, browse a product catalog, and see AI-generated results showing exactly how a garment looks on their body — powered entirely by free, open-source models.
 
 ---
 
 ## ✨ Features
 
-- **Category-aware try-on** — separate AI models for Tops, Bottoms, Dresses, Shoes, and Accessories
-- **AI clothing analysis** — Groq (Llama 3.2 Vision) reads the uploaded garment and extracts color, fit, fabric, and category
-- **Before/after comparison** — side-by-side view of original vs try-on result
-- **Download result** — save the generated image as PNG
-- **Live debug panel** — in-UI log viewer to inspect exactly what each model receives
-- **Dark fashion-forward UI** — editorial aesthetic with warm gold accents
-- **Landing page** — full product catalog with Men's accessories section and category filters
+- **Virtual Try-On** — AI composites any clothing item onto the user's photo
+- **Product Catalog** — Browse tops, bottoms, shoes and caps with real product images
+- **Category-aware routing** — Dedicated AI models per category for accurate results
+- **Multi-select with smart validation** — Prevents invalid combinations (e.g. multiple tops)
+- **Before/After comparison** — Interactive drag slider + 3-panel Original + Product = Result view
+- **Full outfit upsell** — After upper-body try-on, prompts user to try complete outfit
+- **Sign-up gate** — Non-top categories (bottoms, shoes, caps) require account to try on
+- **FastAPI backend** — Clean REST API with product catalog endpoint, result caching, health check
+- **Zero paid APIs** — HuggingFace free tier + Groq free tier only
 
 ---
 
-## 🧠 AI Stack (100% Free & Open Source)
+## 🤖 AI Stack (100% Free & Open Source)
 
 | Category | Model | HuggingFace Space |
 |---|---|---|
-| 👕 Tops | IDM-VTON | `yisol/IDM-VTON` |
-| 👖 Bottoms | OOTDiffusion (Lower-body) | `Nymbo/Virtual-Try-On` |
-| 👗 Dresses | OOTDiffusion (Dress) | `Nymbo/Virtual-Try-On` |
-| 👟 Shoes | ShoeVTON | `franciszzz/virtual-try-on-shoe` |
-| 🧣 Accessories | Kolors Virtual Try-On | `Kwai-Kolors/Kolors-Virtual-Try-On` |
-| 🤖 Vision Analysis | Llama 3.2 Vision | Groq API (free tier) |
+| 👕 **Tops** | IDM-VTON | `yisol/IDM-VTON` |
+| 👖 **Bottoms** | OOTDiffusion (Lower-body) | `Nymbo/Virtual-Try-On` |
+| 👗 **Dresses** | OOTDiffusion (Dress) | `Nymbo/Virtual-Try-On` |
+| 👟 **Shoes** | ShoeVTON | `franciszzz/virtual-try-on-shoe` |
+| 🧢 **Caps** | Kolors Virtual Try-On | `Kwai-Kolors/Kolors-Virtual-Try-On` |
+| 🤖 **Vision Analysis** | Llama 3.2 Vision | Groq API (free tier) |
+
+> **Note:** IDM-VTON takes ~60–120 seconds per generation on the free ZeroGPU tier. This is normal — the model runs on shared GPU hardware.
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-fitai/
-├── 1_Home.py                   # Landing page (entry point)
-├── pages/
-│   └── 2_Try_On.py             # Virtual try-on page
-├── backend/
-│   ├── __init__.py
-│   ├── analyze_cloth.py        # Groq vision analysis
-│   ├── generate.py             # Model routing + HuggingFace calls
-│   └── logger.py               # Centralized logging
-├── .streamlit/
-│   └── config.toml             # Dark theme + layout config
-├── .env.example                # API key template
-├── requirements.txt
-└── README.md
+FitAI/
+│
+├── frontend/                       ← open in browser (never double-click)
+│   ├── index.html                  ← landing page with catalog, before/after slider
+│   ├── tryon.html                  ← virtual try-on page
+│   └── serve_frontend.py           ← serves frontend at http://localhost:5500
+│
+└── backend/                        ← Python FastAPI server
+    ├── main.py                     ← FastAPI app, all endpoints
+    ├── tryon.py                    ← IDM-VTON core logic, singleton client
+    ├── products.py                 ← product catalog (single source of truth)
+    ├── store.py                    ← in-memory result store with TTL expiry
+    ├── download_products.py        ← downloads all 11 product images (run once)
+    ├── debug_tryon.py              ← end-to-end pipeline debugger (no server needed)
+    ├── test_tryon.py               ← CLI test tool
+    ├── requirements.txt
+    ├── .env                        ← API keys (you create from .env.example)
+    ├── .env.example                ← template
+    │
+    └── static/
+        └── products/               ← auto-created by download_products.py
+            ├── white_tee.jpg
+            ├── oxford_shirt.jpg
+            ├── denim_overshirt.jpg
+            ├── slim_jeans.jpg
+            ├── khaki_chinos.jpg
+            ├── black_trousers.jpg
+            ├── white_sneakers.jpg
+            ├── runners.jpg
+            ├── chukka_boots.jpg
+            ├── baseball_cap.jpg
+            └── snapback_cap.jpg
 ```
 
 ---
 
 ## ⚙️ Setup & Installation
 
-### 1. Clone or download the project
+### Prerequisites
+
+- Python 3.11+
+- pip
+- A free HuggingFace account — [huggingface.co](https://huggingface.co)
+- A free Groq account — [console.groq.com](https://console.groq.com)
+
+### Step 1 — Install dependencies
 
 ```cmd
-cd path\to\your\projects
-```
-
-### 2. Install dependencies
-
-```cmd
+cd FitAI/backend
 pip install -r requirements.txt
 ```
 
-### 3. Configure API keys
-
-Copy the example env file and fill in your keys:
+### Step 2 — Configure API keys
 
 ```cmd
 copy .env.example .env
 notepad .env
 ```
 
-Your `.env` should look like this:
+Paste your keys:
 
 ```env
-GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
+GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 ```
-
-**Getting your free API keys:**
 
 | Key | Where to get it | Cost |
 |---|---|---|
+| `HF_TOKEN` | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) → New token → **Read** | Free |
 | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) | Free |
-| `HF_TOKEN` | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) → New token → Read | Free |
 
-> **Note:** `HF_TOKEN` is optional but highly recommended. Without it you hit HuggingFace's anonymous ZeroGPU quota much faster (~60s/day). A logged-in token gives significantly more free GPU time.
+> `HF_TOKEN` is required. Without it, HuggingFace's ZeroGPU quota is exhausted almost immediately (~60s/day). A logged-in token gives significantly more free GPU time.
 
-### 4. Run the app
+### Step 3 — Download product images (run once)
 
 ```cmd
-streamlit run 1_Home.py
+python download_products.py
 ```
 
-Open your browser at `http://localhost:8501`
+Expected output:
+```
+Downloading 11 product images...
+  ✓ white_tee.jpg (37 KB)
+  ✓ oxford_shirt.jpg (52 KB)
+  ...
+11/11 images ready in static/products/
+```
+
+### Step 4 — Verify the pipeline works (debug script)
+
+Before running the server, verify end-to-end:
+
+```cmd
+:: Copy any person photo first
+copy path\to\any_photo.jpg static\test_person.jpg
+
+:: Run all 9 diagnostic steps
+python debug_tryon.py
+```
+
+All 9 steps should pass and a `debug_result.jpg` will appear in `backend/` — open it to confirm the AI result looks correct.
 
 ---
 
-## 🚀 How to Use
+## 🚀 Running the App
 
-1. Open the app and browse the landing page catalog
-2. Click **"✨ Open Try-On"** (bottom-right floating button) or the **"Try it free"** nav button
-3. On the Try-On page, select a **category** (Tops / Bottoms / Shoes / Dresses / Accessories)
-4. Upload your **full-body photo**
-5. Upload the **clothing/item image** you want to try on
-6. Groq automatically analyzes the item (color, fit, fabric)
-7. Adjust **denoising steps** and **seed** if desired
-8. Click **"✦ Try On"** and wait for the result
-9. View the **before/after comparison** and download the result
+Open **two terminals**:
+
+**Terminal 1 — Backend**
+```cmd
+cd FitAI/backend
+python main.py
+```
+Expected:
+```
+FitAI backend starting...
+  HF_TOKEN    : SET ✓
+  GROQ_API_KEY: SET ✓
+  Product images: 11 found ✓
+INFO: Uvicorn running on http://0.0.0.0:8000
+```
+
+**Terminal 2 — Frontend**
+```cmd
+cd FitAI/frontend
+python serve_frontend.py
+```
+Expected:
+```
+Serving frontend from: ...
+Open in browser: http://localhost:5500/tryon.html
+```
+
+**Browser:**
+
+Open **`http://localhost:5500/tryon.html`**
+
+> ⚠️ **Never open `tryon.html` by double-clicking.** The `file://` URL blocks `fetch()` calls to the backend. Always use `http://localhost:5500/tryon.html`.
+
+---
+
+## 🌐 API Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Server status, token check, missing images |
+| `GET` | `/api/products` | All 11 products with image URLs |
+| `POST` | `/api/tryon` | Try-on by `product_id` (uses local saved image) |
+| `POST` | `/api/tryon/upload` | Try-on with custom uploaded garment |
+| `GET` | `/api/result/{id}` | Fetch a previous result by UUID |
+
+### POST `/api/tryon` — Main endpoint
+
+**Request (multipart/form-data):**
+
+| Field | Type | Description |
+|---|---|---|
+| `person_image` | File | JPG/PNG/WEBP photo of the person |
+| `product_id` | string | Product ID from `/api/products` (e.g. `"white_tee"`) |
+| `denoise_steps` | int | 20–50, default 30. Higher = better quality, slower |
+| `seed` | int | Reproducibility seed, default 42 |
+
+**Response (JSON):**
+
+```json
+{
+  "result_id":    "uuid",
+  "result_b64":   "base64-encoded PNG of try-on result",
+  "person_b64":   "base64-encoded PNG of input person",
+  "garment_b64":  "base64-encoded PNG of input garment",
+  "product_name": "Classic White Tee",
+  "product_id":   "white_tee",
+  "duration_sec": 117.4,
+  "model":        "yisol/IDM-VTON"
+}
+```
+
+**Check health:**
+```
+http://localhost:8000/api/health
+http://localhost:8000/api/products
+http://localhost:8000/docs          ← Swagger UI
+```
+
+---
+
+## 🧪 Testing Without the UI
+
+```cmd
+:: Quick CLI test
+python test_tryon.py --person static\test_person.jpg --garment static\products\white_tee.jpg
+
+:: Full pipeline diagnostic (recommended before first use)
+python debug_tryon.py
+```
 
 ---
 
 ## 🐛 Troubleshooting
 
-### `set_page_config() can only be called once`
-`set_page_config()` must only exist in `1_Home.py`. Never add it to files inside `pages/`.
+### `ReadTimeout: The read operation timed out`
 
-### `use_container_width` error on `st.image()`
-Upgrade Streamlit or use `use_column_width=True` instead:
-```cmd
-pip install --upgrade streamlit
-```
+The model finished generating but downloading the result image from HuggingFace timed out. This is a transient network issue.
 
-### ZeroGPU quota exceeded
+- Try again — it often succeeds on a second attempt
+- The backend auto-retries twice before giving up
+- If it happens consistently: try a different network, disable VPN, or try during off-peak hours
+
+### `ZeroGPU quota exceeded`
+
 ```
 You have exceeded your ZeroGPU quota (60s requested vs. 79s left)
 ```
-- Add `HF_TOKEN` to your `.env` for more quota
-- Lower denoising steps to `20`
-- Wait 24 hours for quota reset
 
-### `Repository Not Found` for OOTDiffusion
-`OOTDiffusion/OOTDiffusion` is a **model repo**, not a Gradio Space. The correct Space is `Nymbo/Virtual-Try-On`. Do not change the space names in `generate.py`.
+- Make sure `HF_TOKEN` is in your `.env` — a logged-in token has much higher quota
+- Wait 24 hours for quota to reset
+- Lower `denoise_steps` to 20 to use less GPU time per run
 
-### Bottoms/Shoes applying to wrong body area
-This happens when IDM-VTON is used for non-top categories. IDM-VTON only supports upper body. The routing in `generate.py` handles this automatically — verify the debug logs show the correct model being selected.
+### `person_image must be JPG/PNG/WEBP, got 'image/octet-stream'`
+
+The browser sent the file with an unrecognized MIME type. Rename the file to `.jpg` or `.png` and try again.
+
+### `Product not found`
+
+The `data-id` attribute in `tryon.html` doesn't match a product `id` in `products.py`. Check that they match exactly (case-sensitive).
+
+### Result image doesn't appear in the UI
+
+1. Open DevTools (F12) → Network tab
+2. Click the failed `tryon` request → Response tab
+3. The JSON `"detail"` field shows the real Python error
+4. Run `debug_tryon.py` — if all 9 steps pass, the backend is fine and the issue is JavaScript
+
+### `set_page_config() can only be called once` (Streamlit version)
+
+`set_page_config()` must only exist in `1_Home.py`, never in files inside `pages/`.
+
+### Images not showing in product grid
+
+Product images are served by the backend at `http://localhost:8000/static/products/`. Make sure the backend is running and `download_products.py` has been run first.
 
 ---
 
-## 📋 Debug Logs
+## ⏱️ Performance Notes
 
-FitAI logs every AI call to two places:
+| Operation | Time (free tier) |
+|---|---|
+| IDM-VTON (tops, 30 steps) | ~60–120 seconds |
+| OOTDiffusion (bottoms/dresses) | ~30–60 seconds |
+| ShoeVTON (shoes) | ~20–45 seconds |
+| Groq clothing analysis | ~1–2 seconds |
+| Backend overhead | <1 second |
 
-- **In the UI** — scroll to the bottom of the Try-On page → click **"🛠️ Debug Logs"**
-- **In the terminal** — live output where you ran `streamlit run`
-- **In the file** — `fitai_debug.log` in the project root
-
-Example log output:
-```
-[14:32:01] INFO  | TRY-ON REQUEST
-[14:32:01] INFO  |   Category      : bottoms
-[14:32:01] INFO  |   Description   : slim-fit black trousers, cotton, regular
-[14:32:01] INFO  | MODEL SELECTED  : Nymbo/Virtual-Try-On (Lower-body)
-[14:32:01] INFO  | SPACE ATTEMPT #1 : Nymbo/Virtual-Try-On
-[14:32:01] INFO  |   category      = 'Lower-body'
-[14:32:54] INFO  | SPACE SUCCESS   : Nymbo/Virtual-Try-On
-[14:32:54] INFO  | RESULT IMAGE    : 398x600 px
-```
+Generation time depends on HuggingFace ZeroGPU queue load. During peak hours it can be longer.
 
 ---
 
@@ -168,31 +299,37 @@ Example log output:
 
 | Package | Version | Purpose |
 |---|---|---|
-| `streamlit` | ≥1.35.0 | Web UI framework |
-| `groq` | ≥0.9.0 | Llama 3.2 Vision API client |
+| `fastapi` | ≥0.111.0 | Web framework |
+| `uvicorn[standard]` | ≥0.29.0 | ASGI server |
+| `python-multipart` | ≥0.0.9 | File upload parsing |
 | `gradio_client` | ≥0.16.0 | HuggingFace Space API calls |
 | `Pillow` | ≥10.0.0 | Image processing |
 | `python-dotenv` | ≥1.0.0 | `.env` file loading |
+| `groq` | ≥0.9.0 | Llama 3.2 Vision API |
+| `httpx` | (auto) | HTTP client with timeout control |
+| `anyio` | (auto) | Async thread runner for blocking calls |
 
 ---
 
 ## 🗺️ Roadmap
 
-- [ ] Connect landing page product cards directly to try-on with pre-selected items
-- [ ] Add men's category (separate male/female model routing)
-- [ ] Result gallery — save and compare multiple try-ons
+- [ ] Full-body outfit try-on (shirt + pants together)
+- [ ] User accounts with saved try-on history
 - [ ] Background removal for cleaner garment images
-- [ ] Mobile-responsive layout
+- [ ] Mobile app (React Native / Expo)
+- [ ] More product categories (jackets, dresses, accessories)
+- [ ] Admin panel to add/remove products without code changes
 
 ---
 
 ## 📄 License
 
-This project uses open-source models under their respective licenses:
-- IDM-VTON — [CC BY-NC-SA 4.0](https://huggingface.co/yisol/IDM-VTON)
-- OOTDiffusion — [CC BY-NC-SA 4.0](https://huggingface.co/OOTDiffusion/OOTDiffusion)
-- Kolors — [Kolors Community License](https://huggingface.co/Kwai-Kolors/Kolors)
+Open-source models used under their respective licenses:
+
+- **IDM-VTON** — [CC BY-NC-SA 4.0](https://huggingface.co/yisol/IDM-VTON)
+- **OOTDiffusion** — [CC BY-NC-SA 4.0](https://huggingface.co/OOTDiffusion/OOTDiffusion)
+- **Kolors** — [Kolors Community License](https://huggingface.co/Kwai-Kolors/Kolors)
 
 ---
 
-*Built with Streamlit · Groq · OOTDiffusion · IDM-VTON · Kolors*
+*Built with FastAPI · Gradio Client · IDM-VTON · OOTDiffusion · Groq · Pillow*
