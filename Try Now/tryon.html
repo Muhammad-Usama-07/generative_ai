@@ -713,6 +713,23 @@ function handleGenerate() {
 /* ── GENERATE — sends product_id to backend ── */
 async function generate() {
   var item = state.selected[0];
+
+  // ── DEBUG: log everything we're about to send ──────────────────────────────
+  console.group('🚀 FitAI Generate — starting');
+  console.log('Item selected   :', item);
+  console.log('product_id      :', item.id);
+  console.log('item.cat        :', item.cat);
+  console.log('personFile name :', state.personFile ? state.personFile.name : 'NULL ← problem!');
+  console.log('personFile size :', state.personFile ? state.personFile.size + ' bytes' : 'NULL');
+  console.log('personFile type :', state.personFile ? state.personFile.type : 'NULL');
+  console.groupEnd();
+
+  if (!state.personFile) {
+    showError('No person photo stored. Please re-upload your photo.');
+    console.error('❌ state.personFile is null — aborting');
+    return;
+  }
+
   document.getElementById('r-item').src = item.img;
   document.getElementById('r-item-sub').textContent = item.name;
   document.getElementById('loading-box').classList.add('show');
@@ -730,69 +747,142 @@ async function generate() {
     if (si > steps.length) clearInterval(iv);
   }, 1800);
 
+  // ── AbortController — 3 minute timeout (IDM-VTON takes ~60-120s) ──────────
+  var controller = new AbortController();
+  var timeoutId  = setTimeout(function() {
+    console.warn('⏱ fetch() timed out after 3 minutes — aborting');
+    controller.abort();
+  }, 3 * 60 * 1000);  // 3 minutes
+
   try {
-    // ── Build FormData — person photo + product_id (backend loads garment from disk) ──
+    // ── Build FormData ────────────────────────────────────────────────────────
     var form = new FormData();
-    form.append('person_image', state.personFile);   // actual File object
-    form.append('product_id',   item.id);            // e.g. "white_tee"
+    form.append('person_image', state.personFile);
+    form.append('product_id',   item.id);
     form.append('denoise_steps','30');
     form.append('seed',         '42');
 
-    // ── POST to /api/tryon ──────────────────────────────────────────────────
+    // ── DEBUG: log FormData contents ─────────────────────────────────────────
+    console.group('📦 FormData being sent');
+    for (var pair of form.entries()) {
+      if (pair[1] instanceof File) {
+        console.log(pair[0], '→ File:', pair[1].name, pair[1].size + 'B', pair[1].type);
+      } else {
+        console.log(pair[0], '→', pair[1]);
+      }
+    }
+    console.groupEnd();
+    console.log('📡 POSTing to http://localhost:8000/api/tryon ...');
+    console.time('⏱ fetch duration');
+
+    // ── POST ──────────────────────────────────────────────────────────────────
     var resp = await fetch('http://localhost:8000/api/tryon', {
       method: 'POST',
-      body: form
-      // NO Content-Type header — browser sets multipart boundary automatically
+      body:   form,
+      signal: controller.signal,
     });
 
+    clearTimeout(timeoutId);
+    console.timeEnd('⏱ fetch duration');
+    console.log('📥 Response status :', resp.status, resp.statusText);
+    console.log('📥 Response ok     :', resp.ok);
     clearInterval(iv);
 
+    // ── Read response body as TEXT first so we can log it regardless ─────────
+    var rawText = await resp.text();
+    console.group('📥 Raw response body');
+    console.log(rawText.substring(0, 500) + (rawText.length > 500 ? '...(truncated)' : ''));
+    console.groupEnd();
+
     if (!resp.ok) {
-      var errData = await resp.json().catch(function(){ return { detail: resp.statusText }; });
-      throw new Error(errData.detail || 'Server error ' + resp.status);
+      var detail = rawText;
+      try { detail = JSON.parse(rawText).detail || rawText; } catch(e) {}
+      throw new Error(detail || 'Server error ' + resp.status);
     }
 
-    var data = await resp.json();
+    // ── Parse JSON ────────────────────────────────────────────────────────────
+    var data;
+    try {
+      data = JSON.parse(rawText);
+    } catch(parseErr) {
+      console.error('❌ JSON parse failed:', parseErr);
+      console.error('Raw text was:', rawText.substring(0, 300));
+      throw new Error('Server returned invalid JSON: ' + parseErr.message);
+    }
+
+    // ── DEBUG: validate response fields ───────────────────────────────────────
+    console.group('✅ Parsed JSON response');
+    console.log('result_id     :', data.result_id);
+    console.log('product_name  :', data.product_name);
+    console.log('duration_sec  :', data.duration_sec);
+    console.log('model         :', data.model);
+    console.log('result_b64    :', data.result_b64 ? data.result_b64.substring(0,40)+'... ('+data.result_b64.length+' chars)' : 'MISSING ← problem!');
+    console.log('person_b64    :', data.person_b64 ? 'present ('+data.person_b64.length+' chars)' : 'MISSING');
+    console.log('garment_b64   :', data.garment_b64 ? 'present ('+data.garment_b64.length+' chars)' : 'MISSING');
+    console.groupEnd();
+
+    if (!data.result_b64) {
+      throw new Error('result_b64 is missing from server response. Check backend logs.');
+    }
+
     showResult(data);
 
   } catch(err) {
+    clearTimeout(timeoutId);
     clearInterval(iv);
     document.getElementById('loading-box').classList.remove('show');
     document.getElementById('photo-tryon-btn').disabled = false;
-    showError(err.message);
+
+    var msg = err.message;
+    if (err.name === 'AbortError') {
+      msg = '⏱ Request timed out after 3 minutes. The model is taking too long — try again.';
+    }
+    console.error('❌ Generate failed:', err);
+    showError(msg);
   }
 }
 
 /* ── SHOW RESULT ── */
 function showResult(data) {
+  console.group('🖼 showResult() called');
+
   document.getElementById('loading-box').classList.remove('show');
 
   var resultSrc = 'data:image/png;base64,' + data.result_b64;
+  console.log('resultSrc prefix :', resultSrc.substring(0, 40));
 
-  // Right col 3-panel
-  document.getElementById('r-result').src = resultSrc;
+  // ── Set result image in 3-panel ───────────────────────────────────────────
+  var rResultEl = document.getElementById('r-result');
+  rResultEl.src = resultSrc;
+  rResultEl.onload  = function() { console.log('✅ r-result image loaded successfully, size:', rResultEl.naturalWidth + 'x' + rResultEl.naturalHeight); };
+  rResultEl.onerror = function() { console.error('❌ r-result image failed to load from base64'); };
+
   document.getElementById('result-full').classList.add('show');
 
-  // Left col result card
+  // ── Set result image in left-col card ────────────────────────────────────
+  var cardImg = document.getElementById('result-card-img');
+  cardImg.src = resultSrc;
+  cardImg.onload  = function() { console.log('✅ result-card-img loaded'); };
+  cardImg.onerror = function() { console.error('❌ result-card-img failed to load'); };
+
   document.getElementById('result-card-placeholder').style.display = 'none';
   document.getElementById('result-card-content').style.display = 'block';
-  document.getElementById('result-card-img').src = resultSrc;
   document.getElementById('dl-btn-small').href = resultSrc;
 
   document.getElementById('photo-tryon-btn').disabled = false;
   updateSbar(4);
+  console.log('✅ DOM updated — result-full shown, step bar updated to 4');
 
-  // ── Show full outfit offer block ─────────────────────────────────────────
+  // ── Full outfit offer block ───────────────────────────────────────────────
   var item = state.selected[0];
   if (item && item.cat === 'tops') {
-    // Update shirt pill name
     document.getElementById('outfit-shirt-name').textContent = item.name;
-    // Show result image in outfit visual thumb
     document.getElementById('outfit-result-img').src = resultSrc;
-    // Show the offer block with animation
     document.getElementById('outfit-offer').classList.add('show');
+    console.log('✅ outfit-offer block shown');
   }
 
+  console.groupEnd();
   document.getElementById('result-full').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
