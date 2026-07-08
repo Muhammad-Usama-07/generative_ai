@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom — Cycle &amp; Pregnancy Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3EFE8;
+    --bg-alt: #EAE1D6;
+    --card: #FBF8F3;
+    --ink: #241521;
+    --ink-soft: #5B4E5C;
+    --wine: #7A2E4D;
+    --wine-dark: #58203A;
+    --sage: #6B8F71;
+    --sage-dark: #4F6E55;
+    --gold: #C9932B;
+    --coral: #D9776B;
+    --line: rgba(36,21,33,0.12);
+    --radius: 18px;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px 32px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo .mark{
+    width:34px; height:34px; border-radius:50%;
+    background: conic-gradient(var(--wine) 0 20%, var(--gold) 20% 55%, var(--coral) 55% 62%, var(--sage) 62% 100%);
+  }
+  .logo span{ font-size: 1.4rem; }
+  nav{ display:flex; gap:6px; background: var(--bg-alt); padding:5px; border-radius: 999px; }
+  nav button{
+    border:none; background:transparent; padding: 10px 20px; border-radius: 999px;
+    font-family:'Work Sans'; font-weight:600; font-size:0.92rem; color:var(--ink-soft); cursor:pointer;
+    transition: all .2s;
+  }
+  nav button.active{ background: var(--wine); color: #fff; }
+  .stage-pill{
+    font-size:0.8rem; color:var(--ink-soft); border:1px solid var(--line); padding:6px 14px; border-radius:999px;
+    cursor:pointer; background:var(--bg);
+  }
+
+  main{ max-width: 1080px; margin: 0 auto; padding: 40px 32px 80px; }
+  .view{ display:none; animation: fade .35s ease; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)} }
+
+  .grid{ display:grid; grid-template-columns: 360px 1fr; gap: 28px; }
+  @media (max-width: 860px){ .grid{ grid-template-columns: 1fr; } }
+
+  .card{
+    background: var(--card); border-radius: var(--radius); padding: 26px;
+    border: 1px solid var(--line);
+  }
+  .card h3{ margin: 0 0 4px; font-size: 1.15rem; }
+  .subtle{ color: var(--ink-soft); font-size: 0.88rem; margin: 0 0 18px; }
+
+  /* ---------- Cycle wheel ---------- */
+  .wheel-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .wheel{
+    width: 220px; height: 220px; border-radius:50%; position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .wheel .track{
+    position:absolute; inset:0; border-radius:50%;
+  }
+  .wheel .hole{
+    position:absolute; inset:26px; background:var(--card); border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .wheel .day-num{ font-size:2.2rem; font-family:'Fraunces'; font-weight:600; line-height:1; }
+  .wheel .phase-label{ font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); margin-top:4px; }
+  .marker{
+    position:absolute; width:12px; height:12px; border-radius:50%; background:var(--ink);
+    border: 3px solid var(--card); transform: translate(-50%,-50%);
+  }
+  .legend{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; font-size:0.78rem; color:var(--ink-soft); }
+  .legend span{ display:flex; align-items:center; gap:5px; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  .btn-row{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+  button.action{
+    border:none; padding:11px 18px; border-radius:12px; font-family:'Work Sans'; font-weight:600;
+    font-size:0.88rem; cursor:pointer; transition:transform .15s;
+  }
+  button.action:hover{ transform: translateY(-1px); }
+  .btn-wine{ background:var(--wine); color:#fff; }
+  .btn-sage{ background:var(--sage); color:#fff; }
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--ink); }
+
+  /* ---------- Chips ---------- */
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:var(--bg);
+    font-size:0.84rem; cursor:pointer; user-select:none; transition:all .15s;
+  }
+  .chip.on{ background:var(--wine); color:#fff; border-color:var(--wine); }
+  .chip.on.sage-tone{ background:var(--sage); border-color:var(--sage); }
+
+  /* ---------- Calendar ---------- */
+  .cal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .cal-head button{ background:none; border:1px solid var(--line); border-radius:8px; padding:6px 10px; cursor:pointer; }
+  .cal-grid{ display:grid; grid-template-columns: repeat(7,1fr); gap:6px; text-align:center; }
+  .cal-grid .dow{ font-size:0.72rem; color:var(--ink-soft); font-weight:600; padding-bottom:4px; }
+  .cal-day{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:10px;
+    font-size:0.85rem; font-family:'IBM Plex Mono'; position:relative; cursor:pointer; border:1px solid transparent;
+  }
+  .cal-day.empty{ visibility:hidden; }
+  .cal-day.today{ border-color:var(--ink); }
+  .cal-day.period{ background:var(--wine); color:#fff; }
+  .cal-day.predicted{ background:rgba(122,46,77,0.18); }
+  .cal-day.fertile{ background: rgba(107,143,113,0.25); }
+
+  .history-list{ list-style:none; margin:0; padding:0; }
+  .history-list li{
+    display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:0.88rem;
+  }
+  .history-list li:last-child{ border-bottom:none; }
+
+  /* ---------- Pregnancy arc ---------- */
+  .arc-wrap{ display:flex; flex-direction:column; align-items:center; }
+  svg.arc text{ font-family:'Fraunces'; }
+  .trimester-row{ display:flex; width:100%; justify-content:space-between; font-size:0.72rem; color:var(--ink-soft); margin-top:6px; text-transform:uppercase; letter-spacing:0.05em; }
+
+  .milestone{
+    background: var(--bg-alt); border-radius:14px; padding:18px 20px; margin-top:18px;
+  }
+  .milestone .wk{ font-family:'IBM Plex Mono'; color:var(--wine); font-size:0.8rem; }
+
+  input[type=date], input[type=text], input[type=number]{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+    font-family:'Work Sans'; font-size:0.9rem; background:var(--bg); color:var(--ink);
+  }
+  label.field-label{ font-size:0.78rem; color:var(--ink-soft); display:block; margin:14px 0 6px; }
+  label.field-label:first-child{ margin-top:0; }
+
+  .appt-item{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); }
+  .appt-item button{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:1rem; }
+
+  /* ---------- Onboarding modal ---------- */
+  .modal-bg{
+    position:fixed; inset:0; background:rgba(36,21,33,0.55); display:flex; align-items:center; justify-content:center;
+    z-index:50; padding:20px;
+  }
+  .modal{
+    background:var(--card); border-radius:20px; max-width:520px; width:100%; padding:36px;
+  }
+  .modal h2{ margin-top:0; }
+  .stage-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+  .stage-opt{
+    border:1px solid var(--line); border-radius:14px; padding:14px; cursor:pointer; text-align:left; background:var(--bg);
+  }
+  .stage-opt strong{ display:block; font-size:0.92rem; }
+  .stage-opt span{ font-size:0.76rem; color:var(--ink-soft); }
+  .stage-opt.sel{ border-color:var(--wine); background: rgba(122,46,77,0.08); }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="modal-bg" id="onboardModal">
+  <div class="modal">
+    <h2 class="display">Welcome to Bloom</h2>
+    <p class="subtle">Pick where you are right now — you can change this anytime from the top bar. This just tunes what we show you first.</p>
+    <div class="stage-grid" id="stageGrid"></div>
+    <div class="btn-row">
+      <button class="action btn-wine" id="stageContinue">Continue</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="mark"></div>
+    <span class="display">Bloom</span>
+  </div>
+  <nav>
+    <button id="navCycle" class="active">Cycle</button>
+    <button id="navPregnancy">Pregnancy</button>
+  </nav>
+  <div class="stage-pill" id="stagePill" title="Change life stage">stage: —</div>
+</header>
+
+<main>
+
+  <!-- ================= CYCLE VIEW ================= -->
+  <section id="viewCycle" class="view active">
+    <div class="grid">
+      <div class="card wheel-wrap">
+        <h3>Today</h3>
+        <p class="subtle" id="cycleDateLabel">—</p>
+        <div class="wheel">
+          <div class="track" id="wheelTrack"></div>
+          <div class="marker" id="wheelMarker"></div>
+          <div class="hole">
+            <div class="day-num" id="wheelDay">—</div>
+            <div class="phase-label" id="wheelPhase">no data yet</div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--wine)"></i>Period</span>
+          <span><i class="dot" style="background:var(--gold)"></i>Follicular</span>
+          <span><i class="dot" style="background:var(--coral)"></i>Ovulation</span>
+          <span><i class="dot" style="background:var(--sage)"></i>Luteal</span>
+        </div>
+        <div class="btn-row">
+          <button class="action btn-wine" id="btnStartPeriod">Log period start</button>
+          <button class="action btn-ghost" id="btnEndPeriod">Log period end</button>
+        </div>
+        <label class="field-label" style="align-self:flex-start; width:100%;">Average cycle length (days)</label>
+        <input type="number" id="avgCycleLen" value="28" min="15" max="60">
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:24px;">
+          <h3>How are you feeling today?</h3>
+          <p class="subtle">Tap what applies — saved to today's log.</p>
+          <div class="chips" id="cycleChips"></div>
+        </div>
+
+        <div class="card" style="margin-bottom:24px;">
+          <div class="cal-head">
+            <button id="calPrev">←</button>
+            <h3 id="calLabel" style="margin:0;">—</h3>
+            <button id="calNext">→</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <div class="card">
+          <h3>Cycle history</h3>
+          <ul class="history-list" id="historyList"><li><span class="subtle">No cycles logged yet.</span></li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PREGNANCY VIEW ================= -->
+  <section id="viewPregnancy" class="view">
+    <div class="grid">
+      <div class="card">
+        <h3>Track your pregnancy</h3>
+        <p class="subtle">Enter the first day of your last period, or your due date directly.</p>
+        <label class="field-label">First day of last period</label>
+        <input type="date" id="lmpInput">
+        <label class="field-label">— or — due date directly</label>
+        <input type="date" id="dueInput">
+        <div class="btn-row">
+          <button class="action btn-sage" id="btnSavePregnancy">Save</button>
+          <button class="action btn-ghost" id="btnClearPregnancy">Clear</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card arc-wrap" style="margin-bottom:24px;">
+          <svg class="arc" width="320" height="180" viewBox="0 0 320 180">
+            <path d="M20,160 A140,140 0 0,1 300,160" fill="none" stroke="var(--bg-alt)" stroke-width="18" stroke-linecap="round"/>
+            <path id="arcProgress" d="M20,160 A140,140 0 0,1 300,160" fill="none" stroke="var(--sage)" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 440"/>
+            <text x="160" y="120" text-anchor="middle" font-size="34" fill="var(--ink)" id="arcWeekText">— wk</text>
+            <text x="160" y="145" text-anchor="middle" font-size="12" fill="var(--ink-soft)" id="arcDueText">Enter a date to begin</text>
+          </svg>
+          <div class="trimester-row"><span>1st trimester</span><span>2nd trimester</span><span>3rd trimester</span></div>
+        </div>
+
+        <div class="card" style="margin-bottom:24px;">
+          <div class="milestone">
+            <div class="wk" id="milestoneWeek">Week —</div>
+            <p id="milestoneText" style="margin:6px 0 0;">Save your dates on the left to see weekly notes here.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:24px;">
+          <h3>How are you feeling?</h3>
+          <div class="chips" id="pregChips"></div>
+        </div>
+
+        <div class="card">
+          <h3>Appointments</h3>
+          <label class="field-label">Title</label>
+          <input type="text" id="apptTitle" placeholder="e.g. 20-week scan">
+          <label class="field-label">Date</label>
+          <input type="date" id="apptDate">
+          <div class="btn-row"><button class="action btn-sage" id="btnAddAppt">Add appointment</button></div>
+          <div id="apptList" style="margin-top:14px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ================= STATE ================= */
+const state = {
+  stage: null,
+  avgCycleLength: 28,
+  avgPeriodLength: 5,
+  periods: [], // {start:'YYYY-MM-DD', end: 'YYYY-MM-DD'|null}
+  dayLogs: {}, // 'YYYY-MM-DD': [symptom,...]
+  calMonth: new Date().getMonth(),
+  calYear: new Date().getFullYear(),
+  pregnancy: { lmp: null, due: null },
+  pregLogs: {},
+  appts: []
+};
+
+const CYCLE_SYMPTOMS = ["Cramps","Headache","Bloating","Mood swings","Fatigue","Acne","Tender breasts","Back pain"];
+const PREG_SYMPTOMS = ["Nausea","Fatigue","Heartburn","Back pain","Swelling","Cravings","Braxton Hicks","Trouble sleeping"];
+const STAGES = [
+  {id:'child', label:'Childhood', sub:'8–12, just learning'},
+  {id:'teen', label:'Adolescence', sub:'12–19, cycles starting'},
+  {id:'adult', label:'Reproductive years', sub:'20–35'},
+  {id:'pregnant', label:'Pregnant', sub:'any age'},
+  {id:'postpartum', label:'Postpartum', sub:'recovering'},
+  {id:'menopause', label:'Perimenopause / menopause', sub:'40–55+'}
+];
+
+const todayStr = () => fmt(new Date());
+function fmt(d){ return d.toISOString().slice(0,10); }
+function daysBetween(a,b){ return Math.round((new Date(b) - new Date(a)) / 86400000); }
+function addDays(dateStr, n){ const d = new Date(dateStr); d.setDate(d.getDate()+n); return fmt(d); }
+
+/* ================= ONBOARDING ================= */
+const stageGrid = document.getElementById('stageGrid');
+STAGES.forEach(s=>{
+  const div = document.createElement('div');
+  div.className = 'stage-opt';
+  div.innerHTML = `<strong>${s.label}</strong><span>${s.sub}</span>`;
+  div.onclick = () => {
+    document.querySelectorAll('.stage-opt').forEach(el=>el.classList.remove('sel'));
+    div.classList.add('sel');
+    state.stage = s.label;
+  };
+  stageGrid.appendChild(div);
+});
+document.getElementById('stageContinue').onclick = () => {
+  document.getElementById('onboardModal').classList.add('hidden');
+  document.getElementById('stagePill').textContent = 'stage: ' + (state.stage || 'not set');
+  if(state.stage === 'Pregnant'){ switchView('pregnancy'); }
+};
+document.getElementById('stagePill').onclick = () => document.getElementById('onboardModal').classList.remove('hidden');
+
+/* ================= NAV ================= */
+function switchView(name){
+  document.getElementById('viewCycle').classList.toggle('active', name==='cycle');
+  document.getElementById('viewPregnancy').classList.toggle('active', name==='pregnancy');
+  document.getElementById('navCycle').classList.toggle('active', name==='cycle');
+  document.getElementById('navPregnancy').classList.toggle('active', name==='pregnancy');
+}
+document.getElementById('navCycle').onclick = ()=>switchView('cycle');
+document.getElementById('navPregnancy').onclick = ()=>switchView('pregnancy');
+
+/* ================= CYCLE CHIPS ================= */
+const cycleChipsEl = document.getElementById('cycleChips');
+CYCLE_SYMPTOMS.forEach(s=>{
+  const chip = document.createElement('div');
+  chip.className='chip'; chip.textContent = s;
+  chip.onclick = () => {
+    chip.classList.toggle('on');
+    const log = state.dayLogs[todayStr()] || [];
+    if(chip.classList.contains('on')) log.push(s); else { const i=log.indexOf(s); if(i>-1) log.splice(i,1); }
+    state.dayLogs[todayStr()] = log;
+  };
+  cycleChipsEl.appendChild(chip);
+});
+
+const pregChipsEl = document.getElementById('pregChips');
+PREG_SYMPTOMS.forEach(s=>{
+  const chip = document.createElement('div');
+  chip.className='chip'; chip.textContent = s;
+  chip.onclick = () => {
+    chip.classList.toggle('on','sage-tone');
+    chip.classList.add('sage-tone');
+    const log = state.pregLogs[todayStr()] || [];
+    if(chip.classList.contains('on')) log.push(s); else { const i=log.indexOf(s); if(i>-1) log.splice(i,1); }
+    state.pregLogs[todayStr()] = log;
+  };
+  pregChipsEl.appendChild(chip);
+});
+
+/* ================= CYCLE WHEEL ================= */
+function currentCycleDay(){
+  if(state.periods.length === 0) return null;
+  const lastStart = state.periods[state.periods.length-1].start;
+  const diff = daysBetween(lastStart, todayStr());
+  return (diff % state.avgCycleLength) + 1;
+}
+function phaseForDay(day){
+  const periodLen = state.avgPeriodLength;
+  const cycleLen = state.avgCycleLength;
+  const ovulationDay = cycleLen - 14;
+  if(day <= periodLen) return {name:'Menstrual', color:'var(--wine)'};
+  if(day >= ovulationDay-1 && day <= ovulationDay+1) return {name:'Ovulation', color:'var(--coral)'};
+  if(day < ovulationDay) return {name:'Follicular', color:'var(--gold)'};
+  return {name:'Luteal', color:'var(--sage)'};
+}
+function renderWheel(){
+  const cycleLen = state.avgCycleLength;
+  const periodLen = state.avgPeriodLength;
+  const ovulationDay = cycleLen - 14;
+  const pct = n => (n/cycleLen*100).toFixed(1);
+  const track = document.getElementById('wheelTrack');
+  track.style.background = `conic-gradient(
+    var(--wine) 0% ${pct(periodLen)}%,
+    var(--gold) ${pct(periodLen)}% ${pct(ovulationDay-1)}%,
+    var(--coral) ${pct(ovulationDay-1)}% ${pct(ovulationDay+1)}%,
+    var(--sage) ${pct(ovulationDay+1)}% 100%
+  )`;
+  const day = currentCycleDay();
+  document.getElementById('cycleDateLabel').textContent = new Date().toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+  const dayEl = document.getElementById('wheelDay');
+  const phaseEl = document.getElementById('wheelPhase');
+  const marker = document.getElementById('wheelMarker');
+  if(day === null){
+    dayEl.textContent = '—'; phaseEl.textContent = 'log a period to begin';
+    marker.style.display = 'none';
+    return;
+  }
+  const phase = phaseForDay(day);
+  dayEl.textContent = 'Day ' + day;
+  phaseEl.textContent = phase.name;
+  marker.style.display = 'block';
+  const angle = (day/cycleLen) * 360 - 90;
+  const r = 110;
+  const x = 110 + r * Math.cos(angle * Math.PI/180);
+  const y = 110 + r * Math.sin(angle * Math.PI/180);
+  marker.style.left = x + 'px';
+  marker.style.top = y + 'px';
+}
+
+document.getElementById('avgCycleLen').oninput = (e) => {
+  state.avgCycleLength = parseInt(e.target.value) || 28;
+  renderWheel(); renderCalendar(); renderHistory();
+};
+document.getElementById('btnStartPeriod').onclick = () => {
+  state.periods.push({start: todayStr(), end: null});
+  renderWheel(); renderCalendar(); renderHistory();
+};
+document.getElementById('btnEndPeriod').onclick = () => {
+  if(state.periods.length){ state.periods[state.periods.length-1].end = todayStr(); }
+  renderWheel(); renderCalendar(); renderHistory();
+};
+
+/* ================= CALENDAR ================= */
+function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ["S","M","T","W","T","F","S"].forEach(d=>{
+    const el = document.createElement('div'); el.className='dow'; el.textContent=d; grid.appendChild(el);
+  });
+  const {calMonth, calYear} = state;
+  document.getElementById('calLabel').textContent = new Date(calYear, calMonth).toLocaleDateString(undefined,{month:'long', year:'numeric'});
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+  // predicted next period start
+  let predictedStart = null;
+  if(state.periods.length){
+    predictedStart = addDays(state.periods[state.periods.length-1].start, state.avgCycleLength);
+  }
+
+  for(let i=0;i<firstDay;i++){
+    const empty = document.createElement('div'); empty.className='cal-day empty'; grid.appendChild(empty);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const dateStr = fmt(new Date(calYear, calMonth, day));
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = day;
+    if(dateStr === todayStr()) el.classList.add('today');
+    const inPeriod = state.periods.some(p => dateStr >= p.start && dateStr <= (p.end || p.start));
+    if(inPeriod) el.classList.add('period');
+    else if(predictedStart){
+      const predictedEnd = addDays(predictedStart, state.avgPeriodLength-1);
+      if(dateStr >= predictedStart && dateStr <= predictedEnd) el.classList.add('predicted');
+    }
+    grid.appendChild(el);
+  }
+}
+document.getElementById('calPrev').onclick = () => { state.calMonth--; if(state.calMonth<0){state.calMonth=11; state.calYear--;} renderCalendar(); };
+document.getElementById('calNext').onclick = () => { state.calMonth++; if(state.calMonth>11){state.calMonth=0; state.calYear++;} renderCalendar(); };
+
+/* ================= HISTORY ================= */
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  if(state.periods.length===0){ list.innerHTML = '<li><span class="subtle">No cycles logged yet.</span></li>'; return; }
+  list.innerHTML = '';
+  [...state.periods].reverse().forEach(p=>{
+    const li = document.createElement('li');
+    const lengthLabel = p.end ? (daysBetween(p.start,p.end)+1) + ' day period' : 'ongoing';
+    li.innerHTML = `<span>${p.start}${p.end? ' → '+p.end : ''}</span><span class="subtle mono">${lengthLabel}</span>`;
+    list.appendChild(li);
+  });
+}
+
+/* ================= PREGNANCY ================= */
+function computeWeekInfo(){
+  let lmp = state.pregnancy.lmp;
+  if(!lmp && state.pregnancy.due) lmp = addDays(state.pregnancy.due, -280);
+  if(!lmp) return null;
+  const daysSince = daysBetween(lmp, todayStr());
+  const week = Math.floor(daysSince/7);
+  const dayInWeek = daysSince % 7;
+  const due = state.pregnancy.due || addDays(lmp, 280);
+  return {week: Math.max(0,week), dayInWeek, due, totalDays: daysSince};
+}
+
+const MILESTONES = {
+  4:"A missed period is often the first sign — the earliest structures of the embryo are just forming.",
+  8:"Major organs are starting to develop. Morning sickness and fatigue are common around now.",
+  12:"End of the first trimester — miscarriage risk drops and energy often starts returning.",
+  16:"The placenta is fully formed. Some start to feel the first flutters of movement.",
+  20:"Halfway point. This is typically when an anatomy scan is scheduled.",
+  24:"Viability milestone — the baby's hearing is developing and can respond to sound.",
+  28:"Start of the third trimester. Appointments usually become more frequent from here.",
+  32:"Rapid weight gain phase for the baby; movements become stronger and more noticeable.",
+  36:"Considered early term soon. Braxton Hicks contractions may become more frequent.",
+  40:"Full term due date — every pregnancy varies, so this is an estimate, not a deadline."
+};
+function milestoneFor(week){
+  const keys = Object.keys(MILESTONES).map(Number).sort((a,b)=>a-b);
+  let chosen = keys[0];
+  for(const k of keys){ if(week >= k) chosen = k; }
+  return {week: chosen, text: MILESTONES[chosen]};
+}
+
+function renderPregnancy(){
+  const info = computeWeekInfo();
+  const arcPath = document.getElementById('arcProgress');
+  const weekText = document.getElementById('arcWeekText');
+  const dueText = document.getElementById('arcDueText');
+  const msWeek = document.getElementById('milestoneWeek');
+  const msText = document.getElementById('milestoneText');
+
+  if(!info){
+    arcPath.setAttribute('stroke-dasharray','0 440');
+    weekText.textContent = '— wk'; dueText.textContent = 'Enter a date to begin';
+    msWeek.textContent = 'Week —'; msText.textContent = "Save your dates on the left to see weekly notes here.";
+    return;
+  }
+  const pct = Math.min(info.week/40, 1);
+  arcPath.setAttribute('stroke-dasharray', (pct*440).toFixed(1) + ' 440');
+  weekText.textContent = 'Week ' + info.week;
+  dueText.textContent = 'Due ' + new Date(info.due).toLocaleDateString(undefined,{month:'short', day:'numeric', year:'numeric'});
+  const m = milestoneFor(info.week);
+  msWeek.textContent = 'Around week ' + m.week;
+  msText.textContent = m.text;
+}
+
+document.getElementById('btnSavePregnancy').onclick = () => {
+  const lmp = document.getElementById('lmpInput').value;
+  const due = document.getElementById('dueInput').value;
+  state.pregnancy.lmp = lmp || (due ? addDays(due,-280) : null);
+  state.pregnancy.due = due || (lmp ? addDays(lmp,280) : null);
+  renderPregnancy();
+};
+document.getElementById('btnClearPregnancy').onclick = () => {
+  state.pregnancy = {lmp:null, due:null};
+  document.getElementById('lmpInput').value='';
+  document.getElementById('dueInput').value='';
+  renderPregnancy();
+};
+
+/* ================= APPOINTMENTS ================= */
+function renderAppts(){
+  const list = document.getElementById('apptList');
+  list.innerHTML = '';
+  if(state.appts.length===0){ list.innerHTML = '<p class="subtle">No appointments yet.</p>'; return; }
+  [...state.appts].sort((a,b)=>a.date.localeCompare(b.date)).forEach((a,idx)=>{
+    const el = document.createElement('div');
+    el.className='appt-item';
+    el.innerHTML = `<span>${a.title} — <span class="mono">${a.date}</span></span>`;
+    const del = document.createElement('button');
+    del.textContent = '✕';
+    del.onclick = () => { state.appts = state.appts.filter(x=>x!==a); renderAppts(); };
+    el.appendChild(del);
+    list.appendChild(el);
+  });
+}
+document.getElementById('btnAddAppt').onclick = () => {
+  const title = document.getElementById('apptTitle').value.trim();
+  const date = document.getElementById('apptDate').value;
+  if(!title || !date) return;
+  state.appts.push({title, date});
+  document.getElementById('apptTitle').value=''; document.getElementById('apptDate').value='';
+  renderAppts();
+};
+
+/* ================= INIT ================= */
+renderWheel();
+renderCalendar();
+renderHistory();
+renderPregnancy();
+renderAppts();
+</script>
+</body>
+</html>
