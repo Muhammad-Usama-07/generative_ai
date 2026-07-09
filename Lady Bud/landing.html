@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom — health, every stage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3EFE8;
+    --bg-alt: #EAE1D6;
+    --card: #FBF8F3;
+    --ink: #241521;
+    --ink-soft: #5B4E5C;
+    --wine: #7A2E4D;
+    --wine-dark: #58203A;
+    --sage: #6B8F71;
+    --sage-dark: #4F6E55;
+    --gold: #C9932B;
+    --coral: #D9776B;
+    --line: rgba(36,21,33,0.12);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg); color:var(--ink); font-family:'Work Sans', sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+
+  /* ---- nav ---- */
+  header{
+    position:sticky; top:0; z-index:20; background:rgba(251,248,243,0.9); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{ display:flex; align-items:center; justify-content:space-between; padding:18px 0; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo .mark{ width:30px; height:30px; border-radius:50%;
+    background:conic-gradient(var(--wine) 0 20%, var(--gold) 20% 55%, var(--coral) 55% 62%, var(--sage) 62% 100%); }
+  .logo span{ font-size:1.25rem; }
+  .navlinks{ display:flex; gap:30px; font-size:0.9rem; font-weight:500; }
+  .navlinks a{ text-decoration:none; color:var(--ink-soft); }
+  .navlinks a:hover{ color:var(--ink); }
+  .cta-btn{
+    background:var(--wine); color:#fff; padding:10px 20px; border-radius:999px; font-weight:600;
+    font-size:0.88rem; text-decoration:none; display:inline-block;
+  }
+
+  /* ---- hero ---- */
+  .hero{ padding:90px 0 70px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center; }
+  @media (max-width:860px){ .hero{ grid-template-columns:1fr; padding:50px 0; } }
+  .eyebrow{ font-size:0.8rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--wine); font-weight:600; margin-bottom:16px; }
+  .hero h1{ font-size:3.4rem; line-height:1.05; margin-bottom:22px; }
+  @media (max-width:600px){ .hero h1{ font-size:2.3rem; } }
+  .hero p.lede{ font-size:1.1rem; color:var(--ink-soft); max-width:480px; margin-bottom:30px; }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn-outline{ border:1px solid var(--line); padding:10px 20px; border-radius:999px; font-weight:600; font-size:0.88rem; text-decoration:none; }
+
+  /* hero wheel visual */
+  .hero-visual{ display:flex; align-items:center; justify-content:center; }
+  .hero-wheel{ width:280px; height:280px; border-radius:50%; position:relative;
+    background:conic-gradient(var(--wine) 0 18%, var(--gold) 18% 55%, var(--coral) 55% 62%, var(--sage) 62% 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 30px 60px -20px rgba(36,21,33,0.25);
+  }
+  .hero-wheel::after{
+    content:''; position:absolute; inset:34px; border-radius:50%; background:var(--card);
+  }
+  .hero-wheel-label{ position:relative; z-index:2; text-align:center; }
+  .hero-wheel-label .big{ font-size:2.4rem; font-family:'Fraunces'; }
+  .hero-wheel-label .small{ font-size:0.75rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); }
+
+  /* ---- stages strip ---- */
+  .stages{ padding:20px 0 60px; }
+  .stages-row{ display:flex; gap:14px; overflow-x:auto; padding-bottom:6px; }
+  .stage-card{
+    flex:0 0 auto; min-width:150px; background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px;
+  }
+  .stage-card .tag{ font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--sage-dark); font-weight:600; }
+  .stage-card strong{ display:block; margin-top:6px; font-size:0.95rem; }
+
+  /* ---- features ---- */
+  .section-head{ max-width:600px; margin-bottom:40px; }
+  .section-head .eyebrow{ margin-bottom:12px; }
+  .features{ padding:70px 0; }
+  .feature-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  @media (max-width:860px){ .feature-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:600px){ .feature-grid{ grid-template-columns:1fr; } }
+  .feature-card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; display:flex; flex-direction:column; gap:10px;
+  }
+  .feature-card .num{ font-family:'IBM Plex Mono'; font-size:0.78rem; color:var(--ink-soft); }
+  .feature-card h3{ font-size:1.1rem; }
+  .feature-card p{ font-size:0.88rem; color:var(--ink-soft); line-height:1.5; }
+  .feature-card.live{ border-color:var(--sage); }
+  .status{ font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; padding:3px 9px; border-radius:999px; width:fit-content; }
+  .status.live{ background:rgba(107,143,113,0.18); color:var(--sage-dark); }
+  .status.soon{ background:rgba(36,21,33,0.07); color:var(--ink-soft); }
+
+  /* ---- how it works ---- */
+  .how{ padding:70px 0; }
+  .how-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; }
+  @media (max-width:760px){ .how-grid{ grid-template-columns:1fr; } }
+  .how-step{ padding:0 22px; position:relative; }
+  .how-step:not(:last-child)::after{
+    content:''; position:absolute; top:20px; right:-4px; width:8px; height:1px; border-top:1px dashed var(--line);
+  }
+  @media (max-width:760px){ .how-step:not(:last-child)::after{ display:none; } }
+  .how-step .mono{ color:var(--wine); font-size:0.85rem; }
+  .how-step h3{ margin:10px 0 8px; font-size:1.05rem; }
+  .how-step p{ font-size:0.88rem; color:var(--ink-soft); }
+
+  /* ---- privacy band ---- */
+  .privacy{ background:var(--wine); color:#fdf9f6; padding:60px 0; border-radius:26px; margin:60px 32px; }
+  .privacy .wrap{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+  @media (max-width:760px){ .privacy .wrap{ grid-template-columns:1fr; } }
+  .privacy h2{ font-size:2rem; margin-bottom:14px; }
+  .privacy p{ color:rgba(253,249,246,0.82); font-size:0.95rem; line-height:1.6; }
+  .privacy ul{ list-style:none; }
+  .privacy li{ padding:10px 0; border-bottom:1px solid rgba(253,249,246,0.18); font-size:0.9rem; }
+  .privacy li:last-child{ border-bottom:none; }
+
+  /* ---- footer cta ---- */
+  .final-cta{ text-align:center; padding:80px 0 100px; }
+  .final-cta h2{ font-size:2.2rem; margin-bottom:18px; }
+  .final-cta p{ color:var(--ink-soft); margin-bottom:28px; }
+  footer{ border-top:1px solid var(--line); padding:26px 0; font-size:0.82rem; color:var(--ink-soft); display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap navbar">
+    <div class="logo"><div class="mark"></div><span class="display">Bloom</span></div>
+    <div class="navlinks">
+      <a href="#features">Features</a>
+      <a href="#stages">Life stages</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+    </div>
+    <a class="cta-btn" href="index.html">Open the tracker</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center;">
+    <div>
+      <div class="eyebrow">Reproductive health, one home</div>
+      <h1>Health care for every phase, from first period to old age.</h1>
+      <p class="lede">Bloom follows you through the whole arc — childhood education, cycle tracking, pregnancy, postpartum, and menopause — instead of handing you a different app for every stage of life.</p>
+      <div class="hero-ctas">
+        <a class="cta-btn" href="index.html">Open the tracker</a>
+        <a class="btn-outline" href="#features">See what's inside</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-wheel">
+        <div class="hero-wheel-label">
+          <div class="big">Day 14</div>
+          <div class="small">Ovulation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stages" id="stages">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">One app, every stage</div>
+      <h2>Built around the whole lifespan</h2>
+    </div>
+    <div class="stages-row">
+      <div class="stage-card"><div class="tag">8–12</div><strong>Childhood</strong></div>
+      <div class="stage-card"><div class="tag">12–19</div><strong>Adolescence</strong></div>
+      <div class="stage-card"><div class="tag">20–35</div><strong>Reproductive years</strong></div>
+      <div class="stage-card"><div class="tag">any age</div><strong>Pregnancy</strong></div>
+      <div class="stage-card"><div class="tag">after birth</div><strong>Postpartum</strong></div>
+      <div class="stage-card"><div class="tag">40–55+</div><strong>Perimenopause / menopause</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What we're building</div>
+      <h2>Small pieces, shipped one at a time</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card live">
+        <span class="status live">Live</span>
+        <div class="num">01</div>
+        <h3>Cycle tracker</h3>
+        <p>Log periods, see your phase on a cycle wheel, and get a predicted next start date based on your own history.</p>
+      </div>
+      <div class="feature-card live">
+        <span class="status live">Live</span>
+        <div class="num">02</div>
+        <h3>Pregnancy tracker</h3>
+        <p>Enter your last period or due date and get a week-by-week arc, trimester markers, and simple milestone notes.</p>
+      </div>
+      <div class="feature-card live">
+        <span class="status live">Live</span>
+        <div class="num">03</div>
+        <h3>Symptom &amp; appointment log</h3>
+        <p>Tap to log symptoms each day, and keep a running list of upcoming appointments so nothing gets missed.</p>
+      </div>
+      <div class="feature-card">
+        <span class="status soon">Next</span>
+        <div class="num">04</div>
+        <h3>Age-appropriate education</h3>
+        <p>Short, plain-language explainers for each stage — starting with a childhood/teen module on what periods are and why they happen.</p>
+      </div>
+      <div class="feature-card">
+        <span class="status soon">Next</span>
+        <div class="num">05</div>
+        <h3>Accounts &amp; saved history</h3>
+        <p>A real backend so your logs persist across sessions and devices instead of resetting on refresh.</p>
+      </div>
+      <div class="feature-card">
+        <span class="status soon">Next</span>
+        <div class="num">06</div>
+        <h3>AI health assistant</h3>
+        <p>An educational chatbot that answers general questions and always points to a professional for anything symptom-specific.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>Simple to start</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="mono">01</div>
+        <h3>Pick your stage</h3>
+        <p>Tell Bloom where you are right now — it shapes what's shown first.</p>
+      </div>
+      <div class="how-step">
+        <div class="mono">02</div>
+        <h3>Log as you go</h3>
+        <p>A period start, a symptom, a due date — small entries build the fuller picture over time.</p>
+      </div>
+      <div class="how-step">
+        <div class="mono">03</div>
+        <h3>See the pattern</h3>
+        <p>The cycle wheel and pregnancy arc turn your entries into something you can actually read at a glance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="privacy" id="privacy">
+  <div class="wrap">
+    <div>
+      <h2 class="display">Your data stays yours</h2>
+      <p>This is some of the most personal information you have. Bloom is being built with that as a first-class constraint, not an afterthought.</p>
+    </div>
+    <ul>
+      <li>No diagnosis — ever. Educational content only, with clear pointers to a professional for anything symptom-specific.</li>
+      <li>No selling or sharing of health data with third parties.</li>
+      <li>Encrypted storage once the backend lands — nothing sensitive sits in plain text.</li>
+      <li>You can clear your data at any time.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2 class="display">Ready to try it?</h2>
+    <p>The cycle and pregnancy trackers are live right now — no account needed yet.</p>
+    <a class="cta-btn" href="index.html">Open the tracker</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+    <span>Bloom</span>
+    <span>Built in small pieces, one feature at a time.</span>
+  </div>
+</footer>
+
+</body>
+</html>
