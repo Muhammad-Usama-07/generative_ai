@@ -150,6 +150,72 @@
   }
   .milestone .wk{ font-family:'IBM Plex Mono'; color:var(--wine); font-size:0.8rem; }
 
+  /* ---------- Growth visual (trimester animation) ---------- */
+  .growth-card{ display:flex; flex-direction:column; align-items:center; }
+  .growth-stage-label{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-top:14px; }
+  .growth-visual{
+    width:100%; height:170px; position:relative; display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .growth-visual .halo{
+    position:absolute; border-radius:50%; background: radial-gradient(circle, rgba(122,46,77,0.14), rgba(122,46,77,0) 70%);
+    width:220px; height:220px; opacity:0; transition: opacity .6s ease;
+  }
+  .blob{
+    position:relative; background: linear-gradient(160deg, var(--coral), var(--wine));
+    opacity:0; width:0; height:0;
+    transition: opacity .5s ease;
+  }
+  .kick-dot{
+    position:absolute; width:7px; height:7px; border-radius:50%; background:var(--sage); opacity:0;
+  }
+
+  /* stage 1: seed — small, soft pulse */
+  @keyframes pulseSeed{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.15); }
+  }
+  .growth-stage.stage-1 .halo{ opacity:1; }
+  .growth-stage.stage-1 .blob-1{
+    opacity:1; width:26px; height:26px; border-radius:50%;
+    animation: pulseSeed 2.4s ease-in-out infinite;
+  }
+
+  /* stage 2: curled bud — gentle float + slow rotate */
+  @keyframes floatBud{
+    0%,100%{ transform: translateY(0) rotate(-4deg) scale(1); }
+    50%{ transform: translateY(-10px) rotate(4deg) scale(1.04); }
+  }
+  .growth-stage.stage-2 .halo{ opacity:1; }
+  .growth-stage.stage-2 .blob-2{
+    opacity:1; width:64px; height:76px;
+    border-radius: 60% 40% 55% 45% / 55% 50% 50% 45%;
+    animation: floatBud 3.6s ease-in-out infinite;
+  }
+
+  /* stage 3: full curl — heartbeat pulse + little kicks */
+  @keyframes heartbeat{
+    0%,100%{ transform: scale(1); }
+    20%{ transform: scale(1.08); }
+    35%{ transform: scale(1); }
+    50%{ transform: scale(1.05); }
+    65%{ transform: scale(1); }
+  }
+  @keyframes kick{
+    0%,80%,100%{ opacity:0; transform: translate(0,0) scale(0.6); }
+    40%{ opacity:1; transform: translate(var(--kx,14px), var(--ky,10px)) scale(1); }
+  }
+  .growth-stage.stage-3 .halo{ opacity:1; width:260px; height:260px; }
+  .growth-stage.stage-3 .blob-3{
+    opacity:1; width:108px; height:120px;
+    border-radius: 58% 42% 48% 52% / 60% 55% 45% 40%;
+    animation: heartbeat 2.6s ease-in-out infinite;
+  }
+  .growth-stage.stage-3 .kick-dot{ animation: kick 2.8s ease-in-out infinite; }
+  .growth-stage.stage-3 .kick-dot.k1{ --kx:38px; --ky:-6px; animation-delay:0.2s; }
+  .growth-stage.stage-3 .kick-dot.k2{ --kx:-34px; --ky:14px; animation-delay:1s; }
+  .growth-stage.stage-3 .kick-dot.k3{ --kx:20px; --ky:36px; animation-delay:1.7s; }
+
   input[type=date], input[type=text], input[type=number]{
     width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
     font-family:'Work Sans'; font-size:0.9rem; background:var(--bg); color:var(--ink);
@@ -283,6 +349,21 @@
             <text x="160" y="145" text-anchor="middle" font-size="12" fill="var(--ink-soft)" id="arcDueText">Enter a date to begin</text>
           </svg>
           <div class="trimester-row"><span>1st trimester</span><span>2nd trimester</span><span>3rd trimester</span></div>
+        </div>
+
+        <div class="card growth-card" style="margin-bottom:24px;">
+          <h3>Growth</h3>
+          <p class="subtle">A gentle visual, not a medical illustration — it just changes with your trimester.</p>
+          <div class="growth-visual growth-stage" id="growthStage">
+            <div class="halo"></div>
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+            <div class="kick-dot k1"></div>
+            <div class="kick-dot k2"></div>
+            <div class="kick-dot k3"></div>
+          </div>
+          <div class="growth-stage-label" id="growthLabel">Save your dates to begin</div>
         </div>
 
         <div class="card" style="margin-bottom:24px;">
@@ -554,11 +635,15 @@ function renderPregnancy(){
   const dueText = document.getElementById('arcDueText');
   const msWeek = document.getElementById('milestoneWeek');
   const msText = document.getElementById('milestoneText');
+  const growthEl = document.getElementById('growthStage');
+  const growthLabel = document.getElementById('growthLabel');
 
   if(!info){
     arcPath.setAttribute('stroke-dasharray','0 440');
     weekText.textContent = '— wk'; dueText.textContent = 'Enter a date to begin';
     msWeek.textContent = 'Week —'; msText.textContent = "Save your dates on the left to see weekly notes here.";
+    growthEl.className = 'growth-visual growth-stage';
+    growthLabel.textContent = 'Save your dates to begin';
     return;
   }
   const pct = Math.min(info.week/40, 1);
@@ -568,6 +653,11 @@ function renderPregnancy(){
   const m = milestoneFor(info.week);
   msWeek.textContent = 'Around week ' + m.week;
   msText.textContent = m.text;
+
+  const trimester = info.week < 14 ? 1 : (info.week < 28 ? 2 : 3);
+  growthEl.className = 'growth-visual growth-stage stage-' + trimester;
+  const trimesterNames = {1:'First trimester — early growth', 2:'Second trimester — steady growth', 3:'Third trimester — almost there'};
+  growthLabel.textContent = trimesterNames[trimester];
 }
 
 document.getElementById('btnSavePregnancy').onclick = () => {
