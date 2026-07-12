@@ -329,13 +329,20 @@
     <div class="grid">
       <div class="card">
         <h3>Track your pregnancy</h3>
-        <p class="subtle">Enter the first day of your last period, or your due date directly.</p>
-        <label class="field-label">First day of last period</label>
-        <input type="date" id="lmpInput">
-        <label class="field-label">— or — due date directly</label>
-        <input type="date" id="dueInput">
+        <p class="subtle">Choose which date you know, then enter it below.</p>
+        <div class="chips" style="margin-bottom:16px;">
+          <div class="chip on" id="modeLmpBtn">I know my last period date</div>
+          <div class="chip" id="modeDueBtn">I know my due date</div>
+        </div>
+        <div id="lmpField">
+          <label class="field-label">First day of last period</label>
+          <input type="date" id="lmpInput">
+        </div>
+        <div id="dueField" class="hidden">
+          <label class="field-label">Due date</label>
+          <input type="date" id="dueInput">
+        </div>
         <div class="btn-row">
-          <button class="action btn-sage" id="btnSavePregnancy">Save</button>
           <button class="action btn-ghost" id="btnClearPregnancy">Clear</button>
         </div>
       </div>
@@ -660,17 +667,44 @@ function renderPregnancy(){
   growthLabel.textContent = trimesterNames[trimester];
 }
 
-document.getElementById('btnSavePregnancy').onclick = () => {
-  const lmp = document.getElementById('lmpInput').value;
-  const due = document.getElementById('dueInput').value;
-  state.pregnancy.lmp = lmp || (due ? addDays(due,-280) : null);
-  state.pregnancy.due = due || (lmp ? addDays(lmp,280) : null);
+const lmpInputEl = document.getElementById('lmpInput');
+const dueInputEl = document.getElementById('dueInput');
+const lmpFieldEl = document.getElementById('lmpField');
+const dueFieldEl = document.getElementById('dueField');
+const modeLmpBtn = document.getElementById('modeLmpBtn');
+const modeDueBtn = document.getElementById('modeDueBtn');
+let pregnancyMode = 'lmp';
+
+function setPregnancyMode(mode){
+  pregnancyMode = mode;
+  modeLmpBtn.classList.toggle('on', mode === 'lmp');
+  modeDueBtn.classList.toggle('on', mode === 'due');
+  lmpFieldEl.classList.toggle('hidden', mode !== 'lmp');
+  dueFieldEl.classList.toggle('hidden', mode !== 'due');
+}
+modeLmpBtn.onclick = () => setPregnancyMode('lmp');
+modeDueBtn.onclick = () => setPregnancyMode('due');
+
+function applyPregnancyDates(){
+  if(pregnancyMode === 'lmp'){
+    const lmp = lmpInputEl.value;
+    state.pregnancy.lmp = lmp || null;
+    state.pregnancy.due = lmp ? addDays(lmp,280) : null;
+  } else {
+    const due = dueInputEl.value;
+    state.pregnancy.due = due || null;
+    state.pregnancy.lmp = due ? addDays(due,-280) : null;
+  }
   renderPregnancy();
-};
+}
+
+lmpInputEl.addEventListener('change', applyPregnancyDates);
+dueInputEl.addEventListener('change', applyPregnancyDates);
+
 document.getElementById('btnClearPregnancy').onclick = () => {
   state.pregnancy = {lmp:null, due:null};
-  document.getElementById('lmpInput').value='';
-  document.getElementById('dueInput').value='';
+  lmpInputEl.value='';
+  dueInputEl.value='';
   renderPregnancy();
 };
 
