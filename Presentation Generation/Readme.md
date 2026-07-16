@@ -1,6 +1,6 @@
 # 🎯 AI-Powered Presentation Generator
 
-A CLI-based Python application that leverages **Groq's LLaMA 3.1 70B** model to interactively generate professional PowerPoint presentations — slide by slide, with user-guided title and content selection.
+A **Streamlit web application** that leverages **Groq's LLaMA 3.1 70B** model to interactively generate professional PowerPoint presentations — slide by slide, with user-guided title and content selection.
 
 ---
 
@@ -9,8 +9,9 @@ A CLI-based Python application that leverages **Groq's LLaMA 3.1 70B** model to 
 - **AI-generated slide titles** — 3 variations per slide to choose from
 - **AI-generated slide content** — 2 content versions per slide (detail + bullet points)
 - **15 presentation categories** — Business, Motivational, Academic, Sales, Storytelling, and more
-- **Interactive CLI workflow** — user picks topics, categories, slide count, titles, content, and optional descriptions
-- **PPTX output** — generates a `.pptx` file using `python-pptx`
+- **Interactive Streamlit UI** — step-by-step guided flow through topic setup, slide building, and download
+- **Progress tracking** — visual progress bar and sidebar summary as you build each slide
+- **PPTX download** — one-click download of the generated `.pptx` file directly from the browser
 - **Powered by Groq API** — fast inference via `llama-3.1-70b-versatile`
 
 ---
@@ -19,11 +20,10 @@ A CLI-based Python application that leverages **Groq's LLaMA 3.1 70B** model to 
 
 | Component | Library/Tool |
 |-----------|-------------|
+| UI Framework | `streamlit` |
 | LLM Backend | Groq API (`llama-3.1-70b-versatile`) |
 | Presentation | `python-pptx` |
 | Environment | `python-dotenv` |
-| Embeddings (optional) | `fastembed` |
-| Data utilities | `pandas`, `numpy` |
 
 ---
 
@@ -37,7 +37,7 @@ cd <repo-folder>
 
 **2. Install dependencies**
 ```bash
-pip install groq python-pptx python-dotenv fastembed pandas numpy
+pip install -r requirements.txt
 ```
 
 **3. Set up your Groq API key**
@@ -47,30 +47,25 @@ Create a `.env` file in the project root:
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Or set it directly in the script (not recommended for production):
-```python
-os.environ["GROQ_API_KEY"] = "your_key_here"
-```
-
 ---
 
 ## Usage
 
-Run the script from your terminal:
+Run the Streamlit app:
 ```bash
-python app.py
+streamlit run app.py
 ```
 
 **Step-by-step walkthrough:**
 
-1. **Enter a topic** — e.g., `Artificial Intelligence in Healthcare`
-2. **Select a category** — choose from 15 presentation styles (e.g., `5` for Informative)
-3. **Enter number of slides** — e.g., `5`
-4. **For each slide:**
+1. **Config screen** — enter a topic, select a presentation category, and choose the number of slides
+2. **Slide screens (repeated per slide)** — for each slide:
    - Pick one of 3 AI-generated title options
    - Optionally enter a description to guide content
-   - Pick one of 2 AI-generated content versions
-5. **Output** — a file named `test_generated_presentation.pptx` is saved in the project directory
+   - Click **Generate Content** to get 2 content versions
+   - Pick your preferred version
+   - Click **Next Slide** (or **Finish** on the last slide)
+3. **Download screen** — preview the slide list and download the `.pptx` file directly from the browser
 
 ---
 
@@ -100,9 +95,13 @@ python app.py
 
 ```
 .
-├── app.py                        # Main script
-├── .env                          # Groq API key (not committed)
-├── test_generated_presentation.pptx  # Output file (generated at runtime)
+├── app.py              # Streamlit UI — screen router and all screen functions
+├── generator.py        # Core logic — title/content generation and PPTX creation
+├── llm.py              # Groq API client and call_model() function
+├── state.py            # Session state initialization
+├── config.py           # Constants — model, font sizes, categories, system prompt
+├── requirements.txt    # Python dependencies
+├── .env                # Groq API key (not committed)
 └── README.md
 ```
 
@@ -110,7 +109,7 @@ python app.py
 
 ## Configuration
 
-Key constants at the top of `app.py`:
+All constants are defined in `config.py`:
 
 ```python
 MODEL = "llama-3.1-70b-versatile"   # Groq model
@@ -122,21 +121,44 @@ SLIDE_FONT_SIZE = Pt(16)             # Slide body font size
 
 ---
 
+## App Flow (State Machine)
+
+The UI is driven by `st.session_state.step`:
+
+```
+step = 0  →  Config screen      (topic, category, slide count)
+step = 1  →  Slide screen       (repeated for each slide)
+step = 2  →  Download screen    (preview + .pptx download)
+```
+
+Key session state keys:
+
+| Key | Purpose |
+|-----|---------|
+| `step` | Current screen (0, 1, or 2) |
+| `current_slide` | Which slide is being built |
+| `titles` | 3 AI-suggested titles for the current slide |
+| `contents` | 2 AI-generated content versions for the current slide |
+| `presen_titles` | Accumulated finalized titles |
+| `presen_content` | Accumulated finalized content |
+
+---
+
 ## Notes
 
-- The last slide is always treated as the **"second last"** thematically — useful for conclusions/summaries.
+- The PPTX is generated in memory (`BytesIO`) — no files are written to disk.
 - Topic input is sanitized to remove non-alphabetical characters.
-- The `fastembed`, `ctransformers`, and `pandas`/`numpy` imports are present for future extensibility (e.g., local LLM, RAG-based content) but are not actively used in the current flow.
+- A **Start Over** button is available at any point to reset session state.
 
 ---
 
 ## Future Improvements
 
-- [ ] Streamlit UI (interactive web front-end)
-- [ ] Image insertion per slide
-- [ ] Custom themes and color schemes
+- [ ] Custom slide themes and color schemes
+- [ ] Image insertion per slide (via stock photo API)
 - [ ] Local LLM support via `ctransformers` (LLaMA GGUF)
 - [ ] RAG-based content generation from uploaded documents
 - [ ] Export to Google Slides
+- [ ] Multi-language presentation support
 
 ---
