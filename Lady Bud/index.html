@@ -257,6 +257,33 @@
     </div>
   </div>
 </div>
+<div class="modal-bg hidden" id="loginModal">
+  <div class="modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <h2 class="display" id="loginModalTitle">Log in</h2>
+      <button id="loginModalClose" style="background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink-soft);">✕</button>
+    </div>
+    <div class="chips" style="margin:14px 0 20px;">
+      <div class="chip on" id="authTabLogin">Log in</div>
+      <div class="chip" id="authTabSignup">Sign up</div>
+    </div>
+    <form id="authForm">
+      <label class="field-label" style="margin-top:0;">Email</label>
+      <input type="email" id="authEmail" required placeholder="you@example.com">
+      <label class="field-label">Password</label>
+      <input type="password" id="authPassword" required placeholder="••••••••" minlength="6">
+      <div id="authConfirmWrap" class="hidden">
+        <label class="field-label">Confirm password</label>
+        <input type="password" id="authConfirm" placeholder="••••••••" minlength="6">
+      </div>
+      <p id="authError" class="subtle" style="color:var(--wine); display:none; margin-top:10px;"></p>
+      <div class="btn-row">
+        <button type="submit" class="action btn-wine" id="authSubmit">Log in</button>
+      </div>
+    </form>
+    <p class="subtle" style="margin-top:16px;">This is a front-end demo — no account is actually created yet. Real accounts land once the backend is wired up.</p>
+  </div>
+</div>
 
 <header>
   <div class="logo">
@@ -267,7 +294,10 @@
     <button id="navCycle" class="active">Cycle</button>
     <button id="navPregnancy">Pregnancy</button>
   </nav>
-  <div class="stage-pill" id="stagePill" title="Change life stage">stage: —</div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div class="stage-pill" id="stagePill" title="Change life stage">stage: —</div>
+    <button class="stage-pill" id="loginBtn" style="background:var(--wine); color:#fff; border-color:var(--wine);">Log in</button>
+  </div>
 </header>
 
 <main>
@@ -733,12 +763,93 @@ document.getElementById('btnAddAppt').onclick = () => {
   renderAppts();
 };
 
+/* ================= AUTH (front-end demo only) ================= */
+state.user = null;
+let authMode = 'login';
+const loginModal = document.getElementById('loginModal');
+const authTabLogin = document.getElementById('authTabLogin');
+const authTabSignup = document.getElementById('authTabSignup');
+const authConfirmWrap = document.getElementById('authConfirmWrap');
+const authConfirm = document.getElementById('authConfirm');
+const authError = document.getElementById('authError');
+const authSubmit = document.getElementById('authSubmit');
+const loginModalTitle = document.getElementById('loginModalTitle');
+const loginBtn = document.getElementById('loginBtn');
+
+function setAuthMode(mode){
+  authMode = mode;
+  authTabLogin.classList.toggle('on', mode==='login');
+  authTabSignup.classList.toggle('on', mode==='signup');
+  authConfirmWrap.classList.toggle('hidden', mode!=='signup');
+  authConfirm.required = mode === 'signup';
+  loginModalTitle.textContent = mode==='login' ? 'Log in' : 'Sign up';
+  authSubmit.textContent = mode==='login' ? 'Log in' : 'Create account';
+  authError.style.display = 'none';
+}
+authTabLogin.onclick = () => setAuthMode('login');
+authTabSignup.onclick = () => setAuthMode('signup');
+
+function openLoginModal(){
+  if(state.user){
+    // already "logged in" in this demo — clicking acts as log out
+    state.user = null;
+    updateLoginButton();
+    return;
+  }
+  setAuthMode('login');
+  document.getElementById('authForm').reset();
+  loginModal.classList.remove('hidden');
+}
+function closeLoginModal(){ loginModal.classList.add('hidden'); }
+
+loginBtn.onclick = openLoginModal;
+document.getElementById('loginModalClose').onclick = closeLoginModal;
+loginModal.addEventListener('click', (e) => { if(e.target === loginModal) closeLoginModal(); });
+
+function updateLoginButton(){
+  if(state.user){
+    loginBtn.textContent = state.user.split('@')[0] + ' · Log out';
+  } else {
+    loginBtn.textContent = 'Log in';
+  }
+}
+
+document.getElementById('authForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  authError.style.display = 'none';
+
+  if(!email || !password){
+    authError.textContent = 'Please fill in both fields.';
+    authError.style.display = 'block';
+    return;
+  }
+  if(password.length < 6){
+    authError.textContent = 'Password must be at least 6 characters.';
+    authError.style.display = 'block';
+    return;
+  }
+  if(authMode === 'signup' && password !== authConfirm.value){
+    authError.textContent = "Passwords don't match.";
+    authError.style.display = 'block';
+    return;
+  }
+
+  // Demo only — no real account is created or persisted.
+  state.user = email;
+  updateLoginButton();
+  closeLoginModal();
+});
+
 /* ================= INIT ================= */
 renderWheel();
 renderCalendar();
 renderHistory();
 renderPregnancy();
 renderAppts();
+updateLoginButton();
+if(window.location.hash === '#login'){ openLoginModal(); }
 </script>
 </body>
 </html>
