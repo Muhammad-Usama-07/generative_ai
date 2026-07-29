@@ -78,3 +78,4 @@ This Repository contains all my work & projects related to Generative AI.
 ### Areas 
 
 - Health care 
+- e-commerce 
