@@ -74,7 +74,7 @@ This Repository contains all my work & projects related to Generative AI.
 - hugging face
 - FASHNAI API
 - Groq API
-
+- MlFlow 
 ### Areas 
 
 - Health care 
