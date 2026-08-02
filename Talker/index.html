@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EchoLine — Real-Time Audio Call</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- LANDING SCREEN -->
+  <section id="landing" class="screen active">
+    <div class="card">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <h1>EchoLine</h1>
+      </div>
+      <p class="subtitle">Peer-to-peer voice calling. No delay, no middleman.</p>
+
+      <div class="room-box">
+        <label for="roomInput">Room code</label>
+        <div class="room-row">
+          <input id="roomInput" type="text" maxlength="8" placeholder="e.g. blue-fox-42" autocomplete="off" />
+          <button id="generateBtn" class="icon-btn" title="Generate a room code">⟳</button>
+        </div>
+
+        <button id="joinBtn" class="primary-btn">Join / Start Call</button>
+        <p class="hint">Share this same code with the other person so they can join too.</p>
+      </div>
+
+      <p id="landingError" class="error-text"></p>
+    </div>
+  </section>
+
+  <!-- CALL SCREEN -->
+  <section id="call" class="screen">
+    <div class="call-card">
+      <div class="room-badge">Room: <span id="roomLabel"></span></div>
+
+      <div class="avatar-wrap">
+        <div id="pulse" class="pulse"></div>
+        <div class="avatar">🎙️</div>
+      </div>
+
+      <h2 id="statusText">Waiting for other person to join…</h2>
+      <p id="timerText" class="timer">00:00</p>
+
+      <div class="controls">
+        <button id="muteBtn" class="control-btn" title="Mute">🎤</button>
+        <button id="hangupBtn" class="control-btn hangup" title="Hang up">📞</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<audio id="remoteAudio" autoplay playsinline></audio>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
