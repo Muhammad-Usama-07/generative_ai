@@ -1,0 +1,145 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0b0d14;
+  --card: #141824;
+  --accent: #6c5ce7;
+  --accent-soft: #6c5ce733;
+  --text: #eef0f6;
+  --muted: #8a90a6;
+  --danger: #ff5d5d;
+  --green: #34d399;
+}
+
+body {
+  background: radial-gradient(circle at 50% 0%, #1a1f30 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.app { width: 100%; max-width: 420px; }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.card, .call-card {
+  background: var(--card);
+  border: 1px solid #232838;
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+.brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+
+.subtitle { color: var(--muted); font-size: 14px; margin: 8px 0 28px; }
+
+.room-box { text-align: left; }
+label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.room-row { display: flex; gap: 8px; margin: 8px 0 16px; }
+
+#roomInput {
+  flex: 1;
+  background: #0f1220;
+  border: 1px solid #262c40;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+}
+#roomInput:focus { border-color: var(--accent); }
+
+.icon-btn {
+  background: #0f1220;
+  border: 1px solid #262c40;
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 18px;
+  width: 44px;
+  cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.primary-btn {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.hint { color: var(--muted); font-size: 12px; margin-top: 12px; text-align: center; }
+
+.error-text { color: var(--danger); font-size: 13px; margin-top: 14px; min-height: 16px; }
+
+.room-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted);
+  background: #0f1220;
+  border: 1px solid #262c40;
+  border-radius: 20px;
+  padding: 6px 14px;
+  margin-bottom: 20px;
+}
+.room-badge span { color: var(--accent); font-weight: 600; }
+
+.avatar-wrap { position: relative; width: 120px; height: 120px; margin: 10px auto 22px; display: flex; align-items: center; justify-content: center; }
+
+.avatar {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1c2136, #10131f);
+  border: 1px solid #2a2f45;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px;
+  z-index: 2;
+}
+
+.pulse {
+  position: absolute;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  animation: pulse 2s infinite ease-out;
+}
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+#statusText { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.timer { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 26px; }
+
+.controls { display: flex; gap: 18px; justify-content: center; }
+
+.control-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 1px solid #262c40;
+  background: #0f1220;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.control-btn:hover { transform: translateY(-2px); }
+.control-btn.muted { background: var(--danger); border-color: var(--danger); }
+.control-btn.hangup { background: var(--danger); border-color: var(--danger); }
+.control-btn.hangup:hover { opacity: 0.9; }
