@@ -41,7 +41,7 @@ This Repository contains all my work & projects related to Generative AI.
 - use LLM for database
 - perform system's actions
 - urdu speech
-- tryon
+- Realtime virtual tryon
 - image/video generation
 - resume analysis
 - post content generator
