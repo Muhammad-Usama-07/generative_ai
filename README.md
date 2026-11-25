@@ -75,6 +75,7 @@ This Repository contains all my work & projects related to Generative AI.
 - FASHNAI API
 - Groq API
 - MlFlow 
+
 ### Areas 
 
 - Health care 
